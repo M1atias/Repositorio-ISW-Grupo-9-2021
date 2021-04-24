@@ -7,6 +7,7 @@ import {PopoverController} from '@ionic/angular';
 import {PopovercomponentPage} from '../popovercomponent/popovercomponent.page';
 import {Geolocation, Geoposition} from  '@ionic-native/geolocation/ngx';
 import * as L from 'leaflet';
+import 'leaflet-control-geocoder';
 
 @Component({
   selector: 'app-home',
@@ -22,7 +23,7 @@ export class HomePage implements OnInit{
   validacionImg:string;
   produtosCargados:any[]=[];
   seleccionarDomicilio = "biff";
-  selectorDomicilio: boolean = false;
+  selectorDomicilio: boolean = true;
   ciudadSeleccionada:string;
   nombreCalle:string;
   numeroCalle:string;
@@ -34,6 +35,10 @@ export class HomePage implements OnInit{
   latLong=[];
   map:L.Map;
   marker;
+  _geocoderType = L.Control.Geocoder.nominatim();
+  geocoder = L.Control.geocoder({
+    geocoder: this._geocoderType
+  });
 
   constructor(
     private loadingCtrl:LoadingController,
@@ -314,6 +319,27 @@ showMap2(){
   this.map = new L.Map('myMap').setView([-31.4172235,-64.1891788],14);
   L.tileLayer('assets/mapa/{z}/{x}/{y}.png').addTo(this.map);
   //this.geocoder.addTo(this.map);
+}
+
+ionViewDidEnter(){
+  this.showMap();
+}
+showMap(){
+  this.getGeolaction();
+  this.map = new L.Map('myMap').setView([-31.4172235,-64.1891788],14);
+  L.tileLayer('assets/mapa/{z}/{x}/{y}.png').addTo(this.map);
+  this.geocoder.addTo(this.map);
+  var cen;
+  this.geocoder.on('markgeocode', function(event) {
+      var center = event.geocode.center;
+      cen = center;
+      console.log(center);
+      console.log(cen);
+      //L.marker(center,{draggable:true,bubblingMouseEvents:true}).addTo(mapa);
+      //mapa.setView(center, mapa.getZoom());
+      //this.showMarker(center);
+      //L.Control.geocoder().addTo(this.map);
+    });
 }
 }
 

@@ -70,12 +70,12 @@
 
               <ion-item>
                   <ion-label>Cargar Formulario</ion-label>
-                  <ion-radio slot="start" value="biff" checked (click)="ocultarMapa()"></ion-radio>
+                  <ion-radio slot="start" value="griff" checked (click)="ocultarMapa()"></ion-radio>
               </ion-item>
 
               <ion-item>
                   <ion-label>Seleccionar del Mapa</ion-label>
-                  <ion-radio slot="start" value="griff"  (click)="mostrarMapa()"></ion-radio>
+                  <ion-radio slot="start" value="biff"  (click)="mostrarMapa()"></ion-radio>
               </ion-item>
           </ion-radio-group>
       </ion-list>
@@ -149,10 +149,12 @@
     <ion-card-header>
       Seleccione Domicilio de Entrega
     </ion-card-header>
-    <div class="container" style="height: 385px; width: 495px;">
-      <div id="myMap" style="width: 100%; height: 80%; background-color: brown;">
-      </div>
-    </div>
+    <ion-item>
+    </ion-item>
   </ion-card>
   </ion-grid>
 </ion-content>
+<ion-content>
+    <div id="myMap" style="width: 100%; height: 80%;">
+    </div>
+  </ion-content>
