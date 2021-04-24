@@ -8,14 +8,13 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import {Chooser} from '@ionic-native/chooser/ngx';
 import {PopovercomponentPageModule} from './popovercomponent/popovercomponent.module';
+import {Geolocation} from  '@ionic-native/geolocation/ngx';
 
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, PopovercomponentPageModule],
-  providers: [
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-  Chooser],
+  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },Chooser,Geolocation],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

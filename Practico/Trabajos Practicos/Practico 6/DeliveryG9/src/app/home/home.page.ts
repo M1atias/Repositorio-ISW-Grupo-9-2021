@@ -5,6 +5,8 @@ import { FormControl } from '@angular/forms';
 import {Chooser, ChooserResult} from '@ionic-native/chooser/ngx';
 import {PopoverController} from '@ionic/angular';
 import {PopovercomponentPage} from '../popovercomponent/popovercomponent.page';
+import {Geolocation, Geoposition} from  '@ionic-native/geolocation/ngx';
+import * as L from 'leaflet';
 
 @Component({
   selector: 'app-home',
@@ -30,7 +32,7 @@ export class HomePage implements OnInit{
   latInicial:any;
   logInicial:any;
   latLong=[];
-  //map:L.Map;
+  map:L.Map;
   marker;
 
   constructor(
@@ -38,10 +40,10 @@ export class HomePage implements OnInit{
     private navCtc: NavController,
     private chooser:Chooser,
     private popover:PopoverController,
-    //private geolaction: Geolocation,
+    private geolaction: Geolocation,
   ) {
     this.productoBuscar = this.createFormGroupProducto();
-    //this.domicilio = this.createFormGroupDomicilio();
+    this.domicilio = this.createFormGroupDomicilio();
   }
   resetearFormularioProducto(){
     this.productoBuscar.reset();
@@ -54,14 +56,14 @@ export class HomePage implements OnInit{
   }
   
   productoBuscar: FormGroup;
-  //domicilio: FormGroup;
+  domicilio: FormGroup;
   
   createFormGroupProducto(){
     return new FormGroup({
       nombreProducto: new FormControl('',[Validators.required,Validators.maxLength(255), Validators.minLength(5),Validators.pattern(/^[-a-zA-Z0-9' 'ñÑ]{1,100}$/)])
     });
   }
-  /*createFormGroupDomicilio() {
+  createFormGroupDomicilio() {
     return new FormGroup({
       ciudad: new FormControl('', [Validators.required]),
       calle: new FormControl('', [Validators.required, Validators.maxLength(50), Validators.minLength(3), Validators.pattern(/^[-a-zA-Z0-9' 'ñÑ]{1,100}$/)]),
@@ -70,11 +72,11 @@ export class HomePage implements OnInit{
       departamento: new FormControl('', [Validators.min(1) ,Validators.maxLength(2), Validators.pattern(/^[-a-zA-Z0-9' 'ñÑ]{1,2}$/)]),
       referencia: new FormControl('')
     });
-  }*/
+  }
   get nombreProducto(){
     return this.productoBuscar.get('nombreProducto');
   }
-  /*get ciudad() {
+  get ciudad() {
     return this.domicilio.get('ciudad');
   }
   get calle() {
@@ -92,7 +94,7 @@ export class HomePage implements OnInit{
 
   get referencia() {
     return this.referencia.get('referencia');
-  }*/
+  }
 
   //Mensajes de error 
 public errorMessages = {
@@ -255,6 +257,63 @@ cargarProducto(){
     let list = document.querySelector('#listaProductosACargar');
     list.appendChild(ionItem);
   }
+}
+
+ocultarMapa(){
+  this.selectorDomicilio = false;
+}
+
+mostrarMapa(){
+  this.selectorDomicilio = true;
+}
+
+obtenerCiudad(event){
+  this.ciudadSeleccionada = event.detail.value;
+}
+
+getGeolaction(){
+  this.geolaction.getCurrentPosition({
+    enableHighAccuracy:true,
+    maximumAge:0
+  }).then((res:Geoposition)=>{
+    console.log(res);
+    this.latInicial = res.coords.latitude;
+    this.logInicial = res.coords.longitude;
+    console.log(res.coords.latitude + res.coords.longitude)
+  })
+}
+getPosition(){
+  this.geolaction.getCurrentPosition({
+    enableHighAccuracy:true
+  }).then((res)=>{
+    return this.latLong = [
+      res.coords.latitude,
+      res.coords.longitude
+    ]
+  }).then((latLong)=>{
+    this.showMarker(latLong);
+  })
+}
+
+showMarker(latLog){
+  this.map.remove();
+  this.showMap2();
+  if(this.marker){
+    this.marker.setLatLng(this.latLong,{draggable:true,bubblingMouseEvents:true});
+    this.map.setView(latLog);
+  }else{
+    this.marker = L.marker(latLog,{draggable:true,bubblingMouseEvents:true});
+    this.marker.addTo(this.map).bindPopup('Im Here' + this.marker.getLatLng()).openPopup();
+    this.map.setView(latLog);
+    console.log(this.marker);
+  }
+}
+
+showMap2(){
+  this.getGeolaction();
+  this.map = new L.Map('myMap').setView([-31.4172235,-64.1891788],14);
+  L.tileLayer('assets/mapa/{z}/{x}/{y}.png').addTo(this.map);
+  //this.geocoder.addTo(this.map);
 }
 }
 
