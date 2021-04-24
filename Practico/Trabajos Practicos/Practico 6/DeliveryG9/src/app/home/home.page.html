@@ -1,20 +1,63 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
+      <ion-title>
+          <strong>Realizar Pedido</strong>
+      </ion-title>
+      <ion-buttons slot="start">
+          <ion-button>
+              <ion-icon slot="start" name="newspaper-outline"></ion-icon>
+          </ion-button>
+      </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="refrescar($event)">
+    <ion-refresher-content
+    pullingIcon="arrow-dowm-circle-outline"
+    pullingText="Deslice para actualizar"
+    refreshingSpinner="bubbles"
+    refreshingText="Actualizando...">
+    </ion-refresher-content>
+  </ion-refresher>
+  <ion-grid>
+    <!-- Producto a Buscar -->
+    <ion-card>
+      <ion-card-header>
+        Ingrese Producto a Buscar
+      </ion-card-header>
+      <form [formGroup]="productoBuscar" (ngSubmit)="submit()">
+        <ion-item>
+          <ion-label position="floating">Producto</ion-label>
+          <ion-input formControlName="nombreProducto" [(ngModel)]= "productoB"></ion-input>
+          <div *ngFor="let error of errorMessages.nombreProducto">
+            <ng-container *ngIf="nombreProducto.hasError(error.type) && (nombreProducto.dirty || nombreProducto.touched)">
+              <small class="error-message">{{error.message}}</small>
+            </ng-container>
+          </div>
+        </ion-item>
+        <ion-item>
+          <ion-button (click)="pickFile()">
+            Cargar Archivo
+          </ion-button>
+          <div *ngIf="mostrarImg">
+            <img width="50px" [src]="mostrarImg"/>
+          </div>
+          <ng-container *ngIf="imgValidation === true">
+            {{validacionImg}}
+          </ng-container>
+        </ion-item>
+        <div *ngIf="this.productoBuscar.valid">
+          <ion-button style="text-align: center;" expand="block" fill="outline" color="success" (click)="cargarProducto()">Cargar producto</ion-button>
+          <ion-row>
+            <ion-col size-md="4" offset-md="4">
+              <ion-list id="listaProductosACargar">
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
-  </div>
+              </ion-list>
+            </ion-col>
+          </ion-row>
+        </div>
+      </form>
+    </ion-card>
+  </ion-grid>
 </ion-content>
