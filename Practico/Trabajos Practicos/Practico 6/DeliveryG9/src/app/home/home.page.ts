@@ -62,6 +62,7 @@ export class HomePage implements OnInit{
   numeroTarjetaVISA:string;
   mostrarVISA:string = "*********";
   titularTarjeta:string;
+  
 
   constructor(
     private loadingCtrl:LoadingController,
@@ -83,6 +84,7 @@ export class HomePage implements OnInit{
       this.recargarPagina();
       this.banderaCargaPantalla = true;
     }
+    
   }
   
   productoBuscar: FormGroup;
@@ -333,11 +335,11 @@ ocultarMapa(){
 }
 
 ionViewWillLeave(){
- this.map.remove()
+  this.map.remove()
 }
 mostrarMapa(){
   this.selectorDomicilio = true;
-  this.showMap();
+  this.ionViewWillEnter();
 }
 
 obtenerCiudad(event){
@@ -380,29 +382,43 @@ showMarker(latLog){
   }
 }
 
-showMap2(){
-  this.getGeolaction();
-  this.map = new L.Map('myMap').setView([-31.4172235,-64.1891788],14);
-  L.tileLayer('assets/mapa/{z}/{x}/{y}.png').addTo(this.map);
-  //this.geocoder.addTo(this.map);
-}
-
 capturedPosition(){
   this.marker.addTo(this.map).bindPopup('Im Here' + this.marker.getLatLng()).openPopup();
   const markerJson = this.marker.toGeoJSON();
   console.log(markerJson);
 }
 
-ionViewWillEnter(){
- this.showMap();
+ionViewWillEnter(){  
+  const conMapa = document.querySelector('.container');
+  const container = document.getElementById('myMap')
+  if (container) {
+    this.map = new L.Map('myMap').setView([-31.4172235,-64.1891788],14);
+    this.showMap();
+  }else{
+    console.log('No se encontro el mapa');
+    const newContMapa = document.createElement('ion-card-content');
+    const contenedor = document.createElement('div');
+    newContMapa.setAttribute('width','495px');
+    newContMapa.setAttribute('height','385px');
+    contenedor.setAttribute('width','100%');
+    contenedor.setAttribute('height','80%');
+    contenedor.id="myMap";
+    newContMapa.appendChild(contenedor);
+    this.map = new L.Map('myMap').setView([-31.4172235,-64.1891788],14);
+    this.showMap();
+  }
 }
+
+/*ngAfterViewInit() {
+  this.map = new L.Map('myMap').setView([-31.4172235,-64.1891788],14);
+}*/
 
 /*ionViewDidEnter(){
   this.showMap();
 }*/
 showMap(){
   this.getGeolaction();
-  this.map = new L.Map('myMap').setView([-31.4172235,-64.1891788],14);
+  //this.map = new L.Map('myMap').setView([-31.4172235,-64.1891788],14);
   L.tileLayer('assets/mapa/{z}/{x}/{y}.png').addTo(this.map);
   this.geocoder.addTo(this.map);
   var cen;
@@ -603,5 +619,19 @@ validarMonto(event){
   recorrerTarjeta(){
     this.mostrarVISA = '*****'+this.numeroTarjetaVISA[12]+this.numeroTarjetaVISA[13]+this.numeroTarjetaVISA[14]+this.numeroTarjetaVISA[15]
   }
+
+  validarRecarga(){
+    if (this.produtosCargados.length > 0 && (this.limpiarValore >= this.precio.toString() || this.selectorTarjetaVisible) &&(this.metodoPagoTarjeta.valid || this.metodoPagoEfectivo.valid) && this.domicilio.valid && this.ciudadSeleccionada !== "  " && this.nombreCalle !== "     " && this.numeroCalle !== "   "  && this.limpiarValore !== " ") {
+      return true
+    }else{
+      return false
+    }
+    
+  }
+  confirmarPedido(){
+    console.log('Todavia falta');
+    //this.navCtc.navigateBack('/pantalla-confirmacion');
+  }
+
 }
 
