@@ -220,7 +220,28 @@
             </ion-radio-group>
         </ion-list>
     </ion-card>
-
+       <!--Selecciona pago efectivo-->
+       <ion-card id="rowTarjeta" *ngIf="!selectorTarjetaVisible">
+        <ion-card-header>
+            Pago en efectivo
+        </ion-card-header>
+        <form [formGroup]="metodoPagoEfectivo">
+            <ion-list>
+                <ion-item>
+                    <ion-label position="floating">Monto (aprox): $</ion-label>
+                    <ion-input type="number" id="montoIngresado"  [(ngModel)]= "limpiarValore" (ionChange)="validarMonto( $event )" formControlName="efectivo"></ion-input>
+                    <div>
+                      <small>El costo de envio son $100</small>
+                    </div>
+                    <div *ngFor="let error of errorMessages.efectivo">
+                        <ng-container *ngIf="efectivo.hasError(error.type) && (efectivo.dirty || efectivo.touched)">
+                            <small class="error-message">{{error.message}}</small>
+                        </ng-container>
+                    </div>
+                </ion-item>
+            </ion-list>
+        </form>
+    </ion-card>
 
   </ion-grid>
 </ion-content>

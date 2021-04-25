@@ -56,6 +56,9 @@ export class HomePage implements OnInit{
   fechaSeleccionada:Date = this.fecha;
   modoPago:string = "Efectivo";
   limpiarValore:string = "";
+  montoIngresado:number = 0;
+  precio:number = 100;
+  banderaMonto:boolean = false;
 
   constructor(
     private loadingCtrl:LoadingController,
@@ -66,6 +69,7 @@ export class HomePage implements OnInit{
   ) {
     this.productoBuscar = this.createFormGroupProducto();
     this.domicilio = this.createFormGroupDomicilio();
+    this.metodoPagoEfectivo = this.createFormGroupMetodoPagoEfectivo();
   }
   resetearFormularioProducto(){
     this.productoBuscar.reset();
@@ -97,6 +101,14 @@ export class HomePage implements OnInit{
       referencia: new FormControl('')
     });
   }
+
+  createFormGroupMetodoPagoEfectivo(){
+    return new FormGroup({
+      efectivo: new FormControl('', [Validators.required, Validators.min(100), Validators.pattern(/^[0-9' ']*$/)])
+    });
+  }
+
+
   get nombreProducto(){
     return this.productoBuscar.get('nombreProducto');
   }
@@ -118,6 +130,10 @@ export class HomePage implements OnInit{
 
   get referencia() {
     return this.referencia.get('referencia');
+  }
+
+  get efectivo() {
+    return this.metodoPagoEfectivo.get('efectivo');
   }
 
   //Mensajes de error 
@@ -146,7 +162,7 @@ public errorMessages = {
       { type: 'min', message: 'El número de departamento debe ser mayor a 0' }
     ],
     efectivo: [
-      { type: 'min', message: 'El monto debe ser mayor a 0' },
+      { type: 'min', message: 'El monto ingresado debe ser mayor al costo de envio ($100)' },
       { type: 'required', message: 'El monto es requerido' },
       {type:'pattern', message:'Solo se pueden ingresar números'}
     ],
@@ -508,7 +524,37 @@ resetearFormularioPago() {
   this.metodoPagoTarjeta.reset();
   this.limpiarValore = "";
 }
-
-
+validarMonto(event){
+  this.montoIngresado = event.detail.value;
+  /*if (this.montoIngresado < 0) {
+    if (this.montoIngresado >= this.precio) {
+      this.borrarMensajeDeError();
+      this.banderaMonto = false;
+      //this.vuelto=Math.round((this.montoIngresado - this.precio)*100)/100;
+    }else{
+      if (this.montoIngresado.toString() == '') {
+        this.borrarMensajeDeError();
+        this.banderaMonto = false;
+      }else{
+        if (this.banderaMonto == false) {
+          const mensaje = document.createElement('label');
+          mensaje.textContent = "El monto ingresado es menor al costo del envio";
+          document.querySelector('.error-message2').appendChild(mensaje);
+          this.banderaMonto = true;
+        }
+      }
+    }
+  }else{
+    this.borrarMensajeDeError();
+    this.banderaMonto = false;
+    //this.vuelto = 0;
+  }*/
+}
+  /*borrarMensajeDeError(){
+    let mensajeError = document.querySelector('.error-message2');
+    while (mensajeError.hasChildNodes()) {
+      mensajeError.removeChild(mensajeError.firstChild);
+    }
+  }*/
 }
 
