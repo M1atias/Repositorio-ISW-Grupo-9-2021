@@ -337,6 +337,8 @@ ocultarMapa(){
   this.selectorDomicilio = false;
   this.ionViewWillLeave();
   console.log('Mostrar formulario');
+  const btn = document.querySelector('#coordenadas');
+  btn.setAttribute('disabled','true');
 }
 
 ionViewWillLeave(){
@@ -368,6 +370,8 @@ getGeolaction(){
   })
 }
 getPosition(){
+  const btn = document.querySelector('#coordenadas');
+  btn.setAttribute('disabled','false');
   this.geolaction.getCurrentPosition({
     enableHighAccuracy:true
   }).then((res)=>{
