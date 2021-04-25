@@ -54,6 +54,8 @@ export class HomePage implements OnInit{
   horaProgramada:Date;
   fecha: Date = new Date();
   fechaSeleccionada:Date = this.fecha;
+  modoPago:string = "Efectivo";
+  limpiarValore:string = "";
 
   constructor(
     private loadingCtrl:LoadingController,
@@ -77,6 +79,8 @@ export class HomePage implements OnInit{
   
   productoBuscar: FormGroup;
   domicilio: FormGroup;
+  metodoPagoEfectivo: FormGroup;
+  metodoPagoTarjeta: FormGroup;
   
   createFormGroupProducto(){
     return new FormGroup({
@@ -481,6 +485,28 @@ verificarHora(hora:Date) {
 }else{
   this.horaProgramada = hora;
 }
+}
+
+ocultarSelectorTarjeta() {
+  this.selectorTarjetaVisible = false;
+  this.resetearFormularioPago();
+  this.modoPago = "Efectivo";
+  let iconoPago = document.querySelector('#iconoPago');
+  iconoPago.setAttribute("name","cash-outline");
+}
+
+mostrarSelectorTarjeta() {
+  this.selectorTarjetaVisible = true;
+  this.resetearFormularioPago();
+  this.modoPago = "Tarjeta";
+  let iconoPago = document.querySelector('#iconoPago');
+  iconoPago.setAttribute("name","card-outline");
+}
+
+resetearFormularioPago() {
+  this.metodoPagoEfectivo.reset();
+  this.metodoPagoTarjeta.reset();
+  this.limpiarValore = "";
 }
 
 

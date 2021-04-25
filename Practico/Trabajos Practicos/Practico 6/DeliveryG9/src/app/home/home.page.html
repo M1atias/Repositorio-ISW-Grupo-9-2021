@@ -201,7 +201,25 @@
     </ion-row>
 </ion-card>
 
+      <!--Forma de pago-->
+      <ion-card>
+        <ion-card-header>
+            Seleccione Forma de pago
+        </ion-card-header>
+        <ion-list>
+            <ion-radio-group [(ngModel)]="seleccionarPago">
 
+                <ion-item>
+                    <ion-label>Efectivo</ion-label>
+                    <ion-radio slot="start" value="biff" (click)="ocultarSelectorTarjeta()"></ion-radio>
+                </ion-item>
+                <ion-item>
+                    <ion-label>Con tarjeta VISA</ion-label>
+                    <ion-radio slot="start" value="griff"  (click)="mostrarSelectorTarjeta()"></ion-radio>
+                </ion-item>
+            </ion-radio-group>
+        </ion-list>
+    </ion-card>
 
 
   </ion-grid>
