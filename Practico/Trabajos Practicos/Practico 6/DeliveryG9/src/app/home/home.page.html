@@ -242,6 +242,51 @@
             </ion-list>
         </form>
     </ion-card>
-
+          <!--Selecciona pago con tarjeta-->
+          <ion-card id="rowTarjeta" *ngIf="selectorTarjetaVisible">
+            <ion-card-header>
+                Pago con tarjeta VISA
+            </ion-card-header>
+            <form [formGroup]="metodoPagoTarjeta">
+                <ion-list>
+                    <ion-item>
+                        <ion-label position="floating">Número de Tarjeta <small>(debe tener 16 digitos)</small></ion-label>
+                        <ion-input type="tel" maxlength="16" pattern="[0-9]*" [(ngModel)]= "numeroTarjetaVISA" formControlName="numeroTarjeta" (ionChange)="validarTarjeta( $event )"></ion-input>
+                        <div *ngFor="let error of errorMessages.numeroTarjeta">
+                            <ng-container *ngIf="numeroTarjeta.hasError(error.type) && (numeroTarjeta.dirty || numeroTarjeta.touched)">
+                                <small class="error-message">{{error.message}}</small>
+                            </ng-container>
+                        </div>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label position="floating"> Nombre del titular de la Tarjeta</ion-label>
+                        <ion-input formControlName="nombreTarjeta" [(ngModel)]= "titularTarjeta"></ion-input>
+                        <div *ngFor="let error of errorMessages.nombreTarjeta">
+                            <ng-container *ngIf="nombreTarjeta.hasError(error.type) && (nombreTarjeta.dirty || nombreTarjeta.touched)">
+                                <small class="error-message">{{error.message}}</small>
+                            </ng-container>
+                        </div>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label position="floating"> Expiración (MM/AAAA)</ion-label>
+                        <ion-input type="tel" maxlength="7" formControlName="expiracion"></ion-input>
+                        <div *ngFor="let error of errorMessages.expiracion">
+                            <ng-container *ngIf="expiracion.hasError(error.type) && (expiracion.dirty || expiracion.touched)">
+                                <small class="error-message">{{error.message}}</small>
+                            </ng-container>
+                        </div>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label position="floating">Código de Seguridad</ion-label>
+                        <ion-input type="text" maxlength="3" formControlName="codSeguridad"></ion-input>
+                        <div *ngFor="let error of errorMessages.codSeguridad">
+                            <ng-container *ngIf="codSeguridad.hasError(error.type) && (codSeguridad.dirty || codSeguridad.touched)">
+                                <small class="error-message">{{error.message}}</small>
+                            </ng-container>
+                        </div>
+                    </ion-item>
+                </ion-list>
+            </form>
+        </ion-card>
   </ion-grid>
 </ion-content>

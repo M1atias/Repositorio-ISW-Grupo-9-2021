@@ -59,6 +59,9 @@ export class HomePage implements OnInit{
   montoIngresado:number = 0;
   precio:number = 100;
   banderaMonto:boolean = false;
+  numeroTarjetaVISA:string;
+  mostrarVISA:string = "*********";
+  titularTarjeta:string;
 
   constructor(
     private loadingCtrl:LoadingController,
@@ -70,6 +73,7 @@ export class HomePage implements OnInit{
     this.productoBuscar = this.createFormGroupProducto();
     this.domicilio = this.createFormGroupDomicilio();
     this.metodoPagoEfectivo = this.createFormGroupMetodoPagoEfectivo();
+    this.metodoPagoTarjeta = this.createFormGroupMetodoPagoTarjeta();
   }
   resetearFormularioProducto(){
     this.productoBuscar.reset();
@@ -108,6 +112,17 @@ export class HomePage implements OnInit{
     });
   }
 
+    //Metodo de pago tarjeta
+    createFormGroupMetodoPagoTarjeta() {
+      return new FormGroup({
+        //numero tarjeta solo empieza en 4 / expiracion MMAA / codSeguridad 3 
+        numeroTarjeta: new FormControl('', [Validators.required, Validators.maxLength(16), Validators.minLength(16), Validators.pattern(/^4\d{3}-?\d{4}-?\d{4}-?\d{4}$/)]),
+        nombreTarjeta: new FormControl('', [Validators.required, Validators.maxLength(50), Validators.minLength(3), Validators.pattern(/^[-a-zA-Z' 'ñÑ]{1,100}$/)]),
+        expiracion: new FormControl('', [Validators.required, Validators.maxLength(7), Validators.minLength(7), Validators.pattern(/^((0[1-9]|1[0-2])\/?(20[2-9][1-9]|[0-9]{2})|(09|10|11|12)\/?2020)$/)]),
+        codSeguridad: new FormControl('', [Validators.required, Validators.max(999), Validators.min(0), Validators.pattern(/^[0-9]{3}$/)]),
+      });
+    }
+
 
   get nombreProducto(){
     return this.productoBuscar.get('nombreProducto');
@@ -134,6 +149,19 @@ export class HomePage implements OnInit{
 
   get efectivo() {
     return this.metodoPagoEfectivo.get('efectivo');
+  }
+
+  get numeroTarjeta() {
+    return this.metodoPagoTarjeta.get('numeroTarjeta');
+  }
+  get nombreTarjeta() {
+    return this.metodoPagoTarjeta.get('nombreTarjeta');
+  }
+  get expiracion() {
+    return this.metodoPagoTarjeta.get('expiracion');
+  }
+  get codSeguridad() {
+    return this.metodoPagoTarjeta.get('codSeguridad');
   }
 
   //Mensajes de error 
@@ -301,8 +329,12 @@ cargarProducto(){
 
 ocultarMapa(){
   this.selectorDomicilio = false;
+  this.ionViewWillLeave();
 }
 
+ionViewWillLeave(){
+ this.map.remove()
+}
 mostrarMapa(){
   this.selectorDomicilio = true;
   this.showMap();
@@ -361,9 +393,13 @@ capturedPosition(){
   console.log(markerJson);
 }
 
-ionViewDidEnter(){
-  this.showMap();
+ionViewWillEnter(){
+ this.showMap();
 }
+
+/*ionViewDidEnter(){
+  this.showMap();
+}*/
 showMap(){
   this.getGeolaction();
   this.map = new L.Map('myMap').setView([-31.4172235,-64.1891788],14);
@@ -556,5 +592,16 @@ validarMonto(event){
       mensajeError.removeChild(mensajeError.firstChild);
     }
   }*/
+  validarTarjeta(event){
+    let numeroTarjetap = event.detail.value;
+    if (numeroTarjetap.length == 16) {
+      this.recorrerTarjeta();
+    }else{
+      this.mostrarVISA = "*********";
+    }
+  }
+  recorrerTarjeta(){
+    this.mostrarVISA = '*****'+this.numeroTarjetaVISA[12]+this.numeroTarjetaVISA[13]+this.numeroTarjetaVISA[14]+this.numeroTarjetaVISA[15]
+  }
 }
 
