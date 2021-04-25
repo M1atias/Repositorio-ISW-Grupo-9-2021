@@ -305,27 +305,29 @@ pickFile(){
   }
 }
 cargarProducto(){
-  console.log(this.produtosCargados.length);
   let vueltas = this.produtosCargados.length;
-  for (let index = 0; index <= vueltas; index++) {
-    const ionItem = document.createElement('ion-item');
-    const img = document.createElement('img');
-    const ionAvatar = document.createElement('ion-avatar');
-    const nuevoProducto = document.createElement('ion-label');
-    nuevoProducto.textContent = this.productoB;
-    if (this.mostrarImg) {
-      img.setAttribute("src",this.mostrarImg);
-      img.setAttribute("width","50px");
-      img.setAttribute("margin-left","50px");
-      img.setAttribute("border","10px");
-    }
-    ionAvatar.setAttribute("slot","end");
-    ionAvatar.appendChild(img);
-    ionItem.appendChild(nuevoProducto);
-    ionItem.appendChild(img);
-    let list = document.querySelector('#listaProductosACargar');
-    list.appendChild(ionItem);
+  const detalle = "     ";
+  const ionItem = document.createElement('ion-item');
+  const img = document.createElement('img');
+  const nuevoProducto = document.createElement('ion-label');
+  const ionAvatar = document.createElement('ion-avatar');
+  nuevoProducto.textContent = this.productoB;
+  if (this.mostrarImg) {
+    img.setAttribute("src",this.mostrarImg);
+    img.setAttribute("width","50px");
+    img.setAttribute("margin-left","50px");
+    img.setAttribute("border","10px");
   }
+  ionItem.setAttribute('color','rojoClaro');
+  ionAvatar.setAttribute("slot","end");
+  ionAvatar.appendChild(img);
+  ionItem.appendChild(nuevoProducto);
+  ionItem.appendChild(img);
+  let list = document.querySelector('#listaProductosACargar');
+  list.appendChild(ionItem);
+  this.produtosCargados.push(this.produtosCargados)
+  console.log(this.produtosCargados.length);
+  this.productoB = detalle;
 }
 
 ocultarMapa(){
@@ -391,14 +393,16 @@ showMarker(latLog){
     this.map.setView(latLog);
   }else{
     this.marker = L.marker(latLog,{draggable:true,bubblingMouseEvents:true});
-    this.marker.addTo(this.map).bindPopup('Im Here' + this.marker.getLatLng()).openPopup();
+    const coordenadas = this.marker.getLatLng();
+    this.marker.addTo(this.map).bindPopup('Usted esta en:' + '(Latitud :  ' + coordenadas.lat + ', Longitud: ' + coordenadas.lng + ' ) ').openPopup();
     this.map.setView(latLog);
     console.log(this.marker);
   }
 }
 
 capturedPosition(){
-  this.marker.addTo(this.map).bindPopup('Im Here' + this.marker.getLatLng()).openPopup();
+  const coordenadas = this.marker.getLatLng();
+  this.marker.addTo(this.map).bindPopup('Usted esta en:' + '(Latitud :  ' + coordenadas.lat + ', Longitud: ' + coordenadas.lng + ' ) ').openPopup();
   const markerJson = this.marker.toGeoJSON();
   console.log(markerJson);
 }
@@ -652,7 +656,7 @@ validarMonto(event){
 
   validarRecarga(){
     //cambiar condición this.produtosCargados.length = 0 por this.produtosCargados.length > 0      (this.montoIngresado >= this.precio || this.selectorTarjetaVisible) &&                                                                             // && this.limpiarValore !== " "
-    if (this.produtosCargados.length === 0 && (this.metodoPagoTarjeta.valid || this.metodoPagoEfectivo.valid)) {
+    if (this.produtosCargados.length > 0 && (this.metodoPagoTarjeta.valid || this.metodoPagoEfectivo.valid)) {
       console.log('Productos y pago OK')
       //return true;
       if (this.selectorDomicilio === false && this.domicilio.valid && this.ciudadSeleccionada !== "  " && this.nombreCalle !== "     " && this.numeroCalle !== "   ") {

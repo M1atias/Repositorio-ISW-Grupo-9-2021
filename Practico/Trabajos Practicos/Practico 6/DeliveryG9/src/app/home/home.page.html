@@ -1,5 +1,5 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
+<ion-header [translucent]="true"> 
+  <ion-toolbar color="rojoClaro">
       <ion-title>
           <strong>Realizar Pedido</strong>
       </ion-title>
@@ -11,7 +11,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content color="amarilloClaro">
   <ion-refresher slot="fixed" (ionRefresh)="refrescar($event)">
     <ion-refresher-content
     pullingIcon="arrow-dowm-circle-outline"
@@ -20,13 +20,13 @@
     refreshingText="Actualizando...">
     </ion-refresher-content>
   </ion-refresher>
-  <ion-grid>
+  <ion-grid >
     <!-- Producto a Buscar -->
     <ion-card>
-      <ion-card-header>
+      <ion-card-header color="rojoClaro">
         Ingrese Producto a Buscar
       </ion-card-header>
-      <form [formGroup]="productoBuscar" (ngSubmit)="submit()">
+      <form [formGroup]="productoBuscar" (ngSubmit)="submit()" >
         <ion-item>
           <ion-label position="floating">Producto</ion-label>
           <ion-input formControlName="nombreProducto" [(ngModel)]= "productoB"></ion-input>
@@ -37,7 +37,7 @@
           </div>
         </ion-item>
         <ion-item>
-          <ion-button (click)="pickFile()">
+          <ion-button (click)="pickFile()" color="verdeAzulado">
             Cargar Archivo
           </ion-button>
           <div *ngIf="mostrarImg">
@@ -47,22 +47,22 @@
             {{validacionImg}}
           </ng-container>
         </ion-item>
-        <div *ngIf="this.productoBuscar.valid">
-          <ion-button style="text-align: center;" expand="block" fill="outline" color="success" (click)="cargarProducto()">Cargar producto</ion-button>
-          <ion-row>
-            <ion-col size-md="4" offset-md="4">
-              <ion-list id="listaProductosACargar">
-
-              </ion-list>
-            </ion-col>
-          </ion-row>
+        <div *ngIf="this.productoBuscar.valid && this.productoB !== '     '">
+          <ion-button style="text-align: center;" expand="block" color="success" (click)="cargarProducto()">Cargar producto</ion-button>
         </div>
+        <ion-row>
+          <ion-col size-md="4" offset-md="4">
+            <ion-list id="listaProductosACargar">
+
+            </ion-list>
+          </ion-col>
+        </ion-row>
       </form>
     </ion-card>
 
      <!--Modalidad de domicilio-->
      <ion-card>
-      <ion-card-header>
+      <ion-card-header color="rojoClaro">
           Seleccione Modo de Cargar Domicilio
       </ion-card-header>
       <ion-list>
@@ -81,7 +81,7 @@
       </ion-list>
   </ion-card>
   <ion-card  id="rowFormulario" disabled="true">
-    <ion-card-header>
+    <ion-card-header color="rojoClaro">
         Ingrese Domicilio de Entrega
     </ion-card-header>
     <form [formGroup]="domicilio" (ngSubmit)="submit()">
@@ -146,25 +146,25 @@
     </form>
   </ion-card>
   <ion-card id="rowMapa"  disabled="false">
-    <ion-card-header>
+    <ion-card-header color="rojoClaro">
       Seleccione Domicilio de Entrega
     </ion-card-header>
-    <ion-card-content class="container" style="height: 385px; width: 495px;">
-      <div id="myMap" style="width: 100%; height: 80%;">
+    <ion-card-content class="container" style="height: 385px; width: 495px; align-content: center;">
+      <div id="myMap" style="width: 100%; height: 100%;">
       </div>
-      <ion-button (click)="getPosition()">
-          ¿Donde estoy?
-      </ion-button>
-      <ion-button id="coordenadas" (click)="capturedPosition()" disabled="true">
-          Mostrar Coordenadas
-      </ion-button>
-  </ion-card-content>
+    </ion-card-content>
     <ion-item>
-    </ion-item>
+    <ion-button (click)="getPosition()" class="linea" color="verdeAzulado">
+        ¿Donde estoy?
+    </ion-button>
+    <ion-button id="coordenadas" (click)="capturedPosition()" disabled="true" class="linea" color="verdeAzulado">
+        Mostrar Coordenadas
+    </ion-button>
+</ion-item>
   </ion-card>
   <!--Modalidad de entrega-->
   <ion-card>
-    <ion-card-header>
+    <ion-card-header color="rojoClaro">
         Seleccione Modalidad de entrega
     </ion-card-header>
     <ion-list>
@@ -184,10 +184,10 @@
         </ion-radio-group>
     </ion-list>
 </ion-card>
-<ion-card id="rowFecha" *ngIf="selectorFechaVisible">
+<ion-card id="rowFecha" *ngIf="selectorFechaVisible" color="rojoClaro">
     <ion-row>
-        <ion-col>
-            <ion-item>
+        <ion-col >
+            <ion-item >
                 <ion-label position="floating">Hora de envio</ion-label>
                 <ion-datetime id="hora" displayFormat="HH:mm A" value="{{hora}}" cancelText="Cancelar Hora" doneText="Confirmar Hora" (ionChange)="cambioHora( $event )"></ion-datetime>
             </ion-item>
@@ -203,7 +203,7 @@
 
       <!--Forma de pago-->
       <ion-card>
-        <ion-card-header>
+        <ion-card-header color="rojoClaro">
             Seleccione Forma de pago
         </ion-card-header>
         <ion-list>
@@ -222,7 +222,7 @@
     </ion-card>
        <!--Selecciona pago efectivo-->
        <ion-card id="rowTarjeta" *ngIf="!selectorTarjetaVisible">
-        <ion-card-header>
+        <ion-card-header color="rojoClaro">
             Pago en efectivo
         </ion-card-header>
         <form [formGroup]="metodoPagoEfectivo">
@@ -244,7 +244,7 @@
     </ion-card>
           <!--Selecciona pago con tarjeta-->
           <ion-card id="rowTarjeta" *ngIf="selectorTarjetaVisible">
-            <ion-card-header>
+            <ion-card-header color="rojoClaro">
                 Pago con tarjeta VISA
             </ion-card-header>
             <form [formGroup]="metodoPagoTarjeta">
@@ -290,13 +290,13 @@
         </ion-card>
   </ion-grid>
 
-  <ion-card *ngIf= "validarRecarga()">
-    <ion-card-header>
+  <ion-card *ngIf= "validarRecarga()" color="rojoClaro">
+    <ion-card-header >
         Resumen del pedido
     </ion-card-header>
     <ion-card-content>
         <ion-item-group>
-            <ion-item-divider color="naranjita">
+            <ion-item-divider color="amarilloClaro">
                 <h3><strong>Resumen del pago:</strong></h3>
             </ion-item-divider>
             <ion-item>
@@ -321,7 +321,7 @@
             </ion-item>
         </ion-item-group>
         <ion-item-group>
-            <ion-item-divider color="naranjita" >
+            <ion-item-divider color="amarilloClaro" >
                 <h3><strong>Domicilio de entrega:</strong></h3>    
             </ion-item-divider>
             <ion-item *ngIf="this.selectorDomicilio === false">
@@ -345,7 +345,7 @@
             </ion-item>
         </ion-item-group>
         <ion-item-group *ngIf="!selectorFechaVisible">
-            <ion-item-divider color="naranjita">
+            <ion-item-divider color="amarilloClaro">
                 <h3><strong>Hora de entrega:</strong></h3>
             </ion-item-divider>
             <ion-item>
@@ -353,7 +353,7 @@
             </ion-item>
         </ion-item-group>
         <ion-item-group *ngIf="selectorFechaVisible">
-            <ion-item-divider color="naranjita">
+            <ion-item-divider color="amarilloClaro">
                 <h3><strong>Fecha y hora de entrega:</strong></h3>
             </ion-item-divider>
             <ion-item>
@@ -369,7 +369,7 @@
                 </ion-label>
             </ion-item>
         </ion-item-group>
-        <ion-button shape="round" size="default" expand="block" class="buttonConfirm ion-activatable ripple-parent" (click)="confirmarPedido()">
+        <ion-button color="azulOscuro" shape="round" size="default" expand="block" class="buttonConfirm ion-activatable ripple-parent" (click)="confirmarPedido()">
             <ion-icon slot="start" name="checkmark-outline"></ion-icon>
             Confirmar Pedido
         </ion-button>

@@ -1,13 +1,13 @@
 <ion-header>
-  <ion-toolbar color="rojooscuro">
+  <ion-toolbar color="rojoClaro">
     <ion-title><strong>Pedido Confirmado</strong></ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <ion-card style="padding: 5px; margin-top: 10%; margin-left: 5%;margin-right: 5%;">
-    <ion-card-header>
-      <ion-card-title color="blanquito">
+<ion-content color="amarilloClaro">
+  <ion-card color="rojoClaro" style="padding: 5px; margin-top: 10%; margin-left: 5%;margin-right: 5%;">
+    <ion-card-header >
+      <ion-card-title style="font-weight: bold;">
         Pedido Confirmado 
       </ion-card-title>
     </ion-card-header>
@@ -15,26 +15,16 @@
       <ion-grid>
         <ion-row class="row responsive-sm">
           <ion-col size="12" size-sm>
-            <div style="height: 70%;">
-              <p>BUSCAR IMAGEN</p>
-              <ion-img src="../../assets/icon/gifConfirmacion.gif" style="margin-top: 20px; height: 200px;"></ion-img>
+            <div style="height: 100%;">
+              <ion-img src="../../assets/icon/imgConfirmacion.jpeg" style="margin-top: 20px; height: 200px;"></ion-img>
             </div>
           </ion-col>
         </ion-row>
         <ion-row class="row responsive-sm">
           <ion-col size="12" size-sm>
             <div style="text-align: center;">
-              <ion-text style="font-size: 20px; color: black;">
-                Su pedido fue realizado con exito!!!
-              </ion-text>
-            </div>
-          </ion-col>
-        </ion-row >
-        <ion-row class="row responsive-sm">
-          <ion-col size="12" size-sm>
-            <div style="text-align: center;">
-              <ion-button shape="round"  style="margin-top: 30px;" (click)="presentAlert()">Volver a la Home</ion-button>
-              <ion-button shape="round"  style="margin-top: 30px;" (click)="pedirNuevamente()">Nuevo Pedido</ion-button>
+              <ion-button shape="round" color="azulOscuro" style="margin-top: 30px;" (click)="presentAlert()">Volver al Home</ion-button>
+              <ion-button shape="round" color="azulOscuro" style="margin-top: 30px;" (click)="pedirNuevamente()">Nuevo Pedido</ion-button>
             </div>
           </ion-col>
         </ion-row>
