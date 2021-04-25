@@ -330,16 +330,26 @@ cargarProducto(){
 }
 
 ocultarMapa(){
+  const formulario = document.querySelector('#rowFormulario');
+  const mapa = document.querySelector('#rowMapa');
+  formulario.setAttribute("disabled","false")
+  mapa.setAttribute("disabled","true");
   this.selectorDomicilio = false;
   this.ionViewWillLeave();
+  console.log('Mostrar formulario');
 }
 
 ionViewWillLeave(){
   this.map.remove()
 }
 mostrarMapa(){
+  const mapa = document.querySelector('#rowMapa');
+  const formulario = document.querySelector('#rowFormulario');
+  mapa.setAttribute("disabled","false");
+  formulario.setAttribute("disabled","true");
   this.selectorDomicilio = true;
   this.ionViewWillEnter();
+  console.log('Mostrar mapa');
 }
 
 obtenerCiudad(event){

@@ -70,17 +70,17 @@
 
               <ion-item>
                   <ion-label>Cargar Formulario</ion-label>
-                  <ion-radio slot="start" value="griff" checked (click)="ocultarMapa()"></ion-radio>
+                  <ion-radio slot="start" value="griff" (click)="ocultarMapa()"></ion-radio>
               </ion-item>
 
               <ion-item>
                   <ion-label>Seleccionar del Mapa</ion-label>
-                  <ion-radio slot="start" value="biff"  (click)="mostrarMapa()"></ion-radio>
+                  <ion-radio slot="start" value="biff" checked (click)="mostrarMapa()"></ion-radio>
               </ion-item>
           </ion-radio-group>
       </ion-list>
   </ion-card>
-  <ion-card *ngIf="!selectorDomicilio">
+  <ion-card  id="rowFormulario" disabled="true">
     <ion-card-header>
         Ingrese Domicilio de Entrega
     </ion-card-header>
@@ -145,7 +145,7 @@
         </ion-list>
     </form>
   </ion-card>
-  <ion-card id="rowMapa" *ngIf="selectorDomicilio">
+  <ion-card id="rowMapa"  disabled="false">
     <ion-card-header>
       Seleccione Domicilio de Entrega
     </ion-card-header>
