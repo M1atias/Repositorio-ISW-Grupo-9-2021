@@ -15,6 +15,10 @@ import 'leaflet-control-geocoder';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage implements OnInit{
+  seleccionarEntrega = "biff";
+  seleccionarPago = "biff";
+  selectorFechaVisible: boolean = false;
+  selectorTarjetaVisible: boolean = false;
   banderaCargaPantalla:boolean = false;
   productoB: string;
   fileObj:ChooserResult;
@@ -39,6 +43,17 @@ export class HomePage implements OnInit{
   geocoder = L.Control.geocoder({
     geocoder: this._geocoderType
   });
+  horaParcial: Date = new Date();
+  horaSeleccionada:Date=new Date();
+  corregirHora: boolean = false;
+  diaSeleccionada:Date=new Date();
+  horaModificada:Date = new Date();
+  minutosModificados = this.horaModificada.getMinutes()+30;
+  horaLoAntesPosible:Date;
+  hora:Date = new Date();
+  horaProgramada:Date;
+  fecha: Date = new Date();
+  fechaSeleccionada:Date = this.fecha;
 
   constructor(
     private loadingCtrl:LoadingController,
@@ -270,6 +285,7 @@ ocultarMapa(){
 
 mostrarMapa(){
   this.selectorDomicilio = true;
+  this.showMap();
 }
 
 obtenerCiudad(event){
@@ -301,8 +317,6 @@ getPosition(){
 }
 
 showMarker(latLog){
-  this.map.remove();
-  this.showMap2();
   if(this.marker){
     this.marker.setLatLng(this.latLong,{draggable:true,bubblingMouseEvents:true});
     this.map.setView(latLog);
@@ -319,6 +333,12 @@ showMap2(){
   this.map = new L.Map('myMap').setView([-31.4172235,-64.1891788],14);
   L.tileLayer('assets/mapa/{z}/{x}/{y}.png').addTo(this.map);
   //this.geocoder.addTo(this.map);
+}
+
+capturedPosition(){
+  this.marker.addTo(this.map).bindPopup('Im Here' + this.marker.getLatLng()).openPopup();
+  const markerJson = this.marker.toGeoJSON();
+  console.log(markerJson);
 }
 
 ionViewDidEnter(){
@@ -341,5 +361,128 @@ showMap(){
       //L.Control.geocoder().addTo(this.map);
     });
 }
+
+ocultarSelectorFecha() {
+  this.selectorFechaVisible = false;
+}
+
+mostrarSelectorFecha() {
+  this.selectorFechaVisible = true;
+}
+cambioHora(event) {
+  let hourIngresada = new Date(event.detail.value);
+  let hourActual = new Date();
+  this.horaSeleccionada = hourIngresada;
+  if (this.diaSeleccionada.getDate() == this.fecha.getDate()) {
+  // esto se tiene q ejecutar nomas cuando diaIngresado==DiaHoy
+  if (this.corregirHora == false) {
+
+    if (hourIngresada.getHours() < hourActual.getHours()) {
+      this.presentAlertHourInvalid();
+      this.corregirHora = true;
+
+    } else {
+
+      if (hourIngresada.getHours() == hourActual.getHours()) {
+        if (hourActual.getMinutes() + 31 < hourIngresada.getMinutes()) {
+        }
+        //todo bien        
+        else {
+          this.presentAlertMinuteInvalid();
+          this.corregirHora = true;
+        }
+      }else{if (hourActual.getHours()+1==hourIngresada.getHours() && hourActual.getMinutes()>=30 ){
+          if(hourIngresada.getMinutes()<hourActual.getMinutes()-30){
+            this.presentAlertMinuteInvalid();
+            this.corregirHora = true;
+          }
+        }
+      }
+    }
+  }//aca termina el else grande
+  if (this.corregirHora) {
+    this.reestablecerValorCampoHora();
+  }else{
+    this.horaProgramada = event.detail.value;
+  }
+}else{
+  this.horaProgramada = event.detail.value;
+}
+}
+
+presentAlertHourInvalid() {
+  const alert = document.createElement('ion-alert');
+  alert.header = "Hora incorrecta !!";
+  alert.subHeader = "Seleccione nuevamente la hora";
+  alert.message = "La hora que fue seleccionada es menor a la hora actual";
+  alert.buttons = ["Ok"];
+  document.body.appendChild(alert);
+  return alert.present();
+}
+presentAlertMinuteInvalid() {
+  const alert = document.createElement('ion-alert');
+  alert.header = "Hora incorrecta !!";
+  alert.subHeader = "Seleccione nuevamente la hora";
+  alert.message = "No se puede hacer la entrega antes de los 30 min";
+  alert.buttons = ["Ok"];
+  document.body.appendChild(alert);
+  return alert.present();
+}
+
+reestablecerValorCampoHora() {
+  let campoHora = document.querySelector('#hora');
+  campoHora.setAttribute("value", this.hora.toString());
+  this.corregirHora = false;
+  this.horaProgramada = this.hora;
+
+}
+
+cambioFecha(event) {
+  let date = new Date(event.detail.value);
+  this.diaSeleccionada = new Date(event.detail.value);
+  this.fechaSeleccionada = this.diaSeleccionada;
+  this.verificarHora(this.horaSeleccionada);
+}
+verificarHora(hora:Date) {
+  let hourIngresada = new Date(hora);
+  let hourActual = new Date();
+  this.horaSeleccionada = hourIngresada;
+  if (this.diaSeleccionada.getDate() == this.fecha.getDate()) {
+  // esto se tiene q ejecutar nomas cuando diaIngresado==DiaHoy
+  if (this.corregirHora == false) {
+
+    if (hourIngresada.getHours() < hourActual.getHours()) {
+      this.presentAlertHourInvalid();
+      this.corregirHora = true;
+
+    } else {
+
+      if (hourIngresada.getHours() == hourActual.getHours()) {
+        if (hourActual.getMinutes() + 31 < hourIngresada.getMinutes()) {
+        }
+        //todo bien        
+        else {
+          this.presentAlertMinuteInvalid();
+          this.corregirHora = true;
+        }
+      }else{if (hourActual.getHours()+1==hourIngresada.getHours() && hourActual.getMinutes()>=30 ){
+          if(hourIngresada.getMinutes()<hourActual.getMinutes()-30){
+            this.presentAlertMinuteInvalid();
+            this.corregirHora = true;
+          }
+        }
+      }
+    }
+  }//aca termina el else grande
+  if (this.corregirHora) {
+    this.reestablecerValorCampoHora();
+  }else{
+  }
+}else{
+  this.horaProgramada = hora;
+}
+}
+
+
 }
 

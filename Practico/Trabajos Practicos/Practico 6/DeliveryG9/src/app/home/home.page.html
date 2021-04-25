@@ -149,12 +149,60 @@
     <ion-card-header>
       Seleccione Domicilio de Entrega
     </ion-card-header>
+    <div class="container" style="height: 385px; width: 495px;">
+      <div id="myMap" style="width: 100%; height: 80%;">
+      </div>
+      <ion-button (click)="getPosition()">
+          Mostrar mi ubicación
+      </ion-button>
+      <ion-button (click)="capturedPosition()">
+          Here
+      </ion-button>
+    </div>
     <ion-item>
     </ion-item>
   </ion-card>
+  <!--Modalidad de entrega-->
+  <ion-card>
+    <ion-card-header>
+        Seleccione Modalidad de entrega
+    </ion-card-header>
+    <ion-list>
+        <ion-radio-group [(ngModel)]="seleccionarEntrega">
+
+            <ion-item>
+                <ion-label>Lo antes posible
+                <small>(~ 30 min)</small>
+            </ion-label>
+                <ion-radio slot="start" value="biff" checked (click)="ocultarSelectorFecha()"></ion-radio>
+            </ion-item>
+
+            <ion-item>
+                <ion-label>Envio Programado</ion-label>
+                <ion-radio slot="start" value="griff"  (click)="mostrarSelectorFecha()"></ion-radio>
+            </ion-item>
+        </ion-radio-group>
+    </ion-list>
+</ion-card>
+<ion-card id="rowFecha" *ngIf="selectorFechaVisible">
+    <ion-row>
+        <ion-col>
+            <ion-item>
+                <ion-label position="floating">Hora de envio</ion-label>
+                <ion-datetime id="hora" displayFormat="HH:mm A" value="{{hora}}" cancelText="Cancelar Hora" doneText="Confirmar Hora" (ionChange)="cambioHora( $event )"></ion-datetime>
+            </ion-item>
+        </ion-col>
+        <ion-col>
+            <ion-item>
+                <ion-label stacked position="floating">Fecha de envio</ion-label>
+                <ion-datetime id = "dia" displayFormat="DD MMM" value="{{fecha | date: 'yyyy-MM-dd'}}" min="{{fecha | date: 'yyyy-MM-dd'}}" cancelText="Cancelar Fecha" doneText="Confirmar Fecha" (ngModel)="fecha.toISOString()" (ionChange)="cambioFecha( $event )" monthShortNames="Enero, Febrero, Marzo, Abril, Mayo, Junio, Julio, Agosto, Septiembre, Octubre, Noviembre, Diciembre"></ion-datetime>
+            </ion-item>
+        </ion-col>
+    </ion-row>
+</ion-card>
+
+
+
+
   </ion-grid>
 </ion-content>
-<ion-content>
-    <div id="myMap" style="width: 100%; height: 80%;">
-    </div>
-  </ion-content>
