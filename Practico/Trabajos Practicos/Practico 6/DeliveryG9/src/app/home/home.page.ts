@@ -49,10 +49,10 @@ export class HomePage implements OnInit{
   diaSeleccionada:Date=new Date();
   horaModificada:Date = new Date();
   minutosModificados = this.horaModificada.getMinutes()+30;
-  horaLoAntesPosible:Date;
   hora:Date = new Date();
   horaProgramada:Date;
   fecha: Date = new Date();
+  horaLoAntesPosible:Date = new Date(this.fecha.getFullYear(),this.fecha.getMonth(),this.fecha.getDate(),this.horaModificada.getHours(),this.minutosModificados,0);
   fechaSeleccionada:Date = this.fecha;
   modoPago:string = "Efectivo";
   limpiarValore:string = "";
@@ -227,7 +227,7 @@ public errorMessages = {
   };
 
   recargarPagina(){
-    /*if (this.minutosModificados > 60) {
+    if (this.minutosModificados > 60) {
       let horaFinal = this.horaModificada.getHours() + 1;
       this.minutosModificados = this.minutosModificados - 60;
       this.hora = new Date(this.fecha.getFullYear(),this.fecha.getMonth(),this.fecha.getDate(),horaFinal,this.minutosModificados,0);
@@ -238,7 +238,7 @@ public errorMessages = {
       this.hora = new Date(this.fecha.getFullYear(),this.fecha.getMonth(),this.fecha.getDate(),this.horaModificada.getHours(),this.minutosModificados,0);
       this.horaLoAntesPosible = this.hora;
       this.horaProgramada = this.hora;
-    }*/
+    }
     this.banderaCargaPantalla = false;
   }
   
@@ -253,15 +253,14 @@ public errorMessages = {
   }
   refrescar(event){
     setTimeout(()=>{
-    /*this.limpiarCampos();
-    this.borrarPedido();
+    this.limpiarCampos();
     this.presentLoading();
     this.recargarPagina();
     this.domicilio.reset();
     this.metodoPagoEfectivo.reset();
     this.metodoPagoTarjeta.reset();
     this.limpiarValore = " ";
-    this.referenciaIngresada = "";*/
+    this.referenciaIngresada = "";
     event.target.complete();
   },1500);
 }
@@ -339,6 +338,7 @@ ocultarMapa(){
   console.log('Mostrar formulario');
   const btn = document.querySelector('#coordenadas');
   btn.setAttribute('disabled','true');
+  console.log(this.selectorDomicilio);
 }
 
 ionViewWillLeave(){
@@ -352,6 +352,7 @@ mostrarMapa(){
   this.selectorDomicilio = true;
   this.ionViewWillEnter();
   console.log('Mostrar mapa');
+  console.log(this.selectorDomicilio);
 }
 
 obtenerCiudad(event){
@@ -634,17 +635,58 @@ validarMonto(event){
     this.mostrarVISA = '*****'+this.numeroTarjetaVISA[12]+this.numeroTarjetaVISA[13]+this.numeroTarjetaVISA[14]+this.numeroTarjetaVISA[15]
   }
 
+  limpiarCampos(){
+    this.ciudadSeleccionada = "  ";   
+    this.nombreCalle = "     ";
+    this.numeroCalle = "   ";
+    this.numeroPiso = null;
+    this.numeroDepartamento = " ";
+    this.referenciaIngresada = "";
+    this.selectorFechaVisible = false;
+    this.seleccionarEntrega = "biff";
+    this.seleccionarPago = "biff";
+    this.selectorTarjetaVisible = false; 
+    this.numeroTarjetaVISA=null;
+    this.titularTarjeta = null;
+  }
+
   validarRecarga(){
-    if (this.produtosCargados.length > 0 && (this.limpiarValore >= this.precio.toString() || this.selectorTarjetaVisible) &&(this.metodoPagoTarjeta.valid || this.metodoPagoEfectivo.valid) && this.domicilio.valid && this.ciudadSeleccionada !== "  " && this.nombreCalle !== "     " && this.numeroCalle !== "   "  && this.limpiarValore !== " ") {
-      return true
+    //cambiar condición this.produtosCargados.length = 0 por this.produtosCargados.length > 0      (this.montoIngresado >= this.precio || this.selectorTarjetaVisible) &&                                                                             // && this.limpiarValore !== " "
+    if (this.produtosCargados.length === 0 && (this.metodoPagoTarjeta.valid || this.metodoPagoEfectivo.valid)) {
+      console.log('Productos y pago OK')
+      //return true;
+      if (this.selectorDomicilio === false && this.domicilio.valid && this.ciudadSeleccionada !== "  " && this.nombreCalle !== "     " && this.numeroCalle !== "   ") {
+        //&& this.domicilio.valid && this.ciudadSeleccionada !== "  " && this.nombreCalle !== "     " && this.numeroCalle !== "   "  &&
+        return true
+      }
+      else if (this.selectorDomicilio === true) {
+        return true
+      }
+      else{
+        this.validacionImg = 'Se debe seleccionar una posición en el mapa'
+        this.CreatePopover();
+        return false
+      }
     }else{
       return false
     }
     
   }
   confirmarPedido(){
-    console.log('Todavia falta');
-    //this.navCtc.navigateBack('/pantalla-confirmacion');
+    if (this.selectorDomicilio === false) {
+      this.navCtc.navigateBack('/pantalla-confirmacion');
+    }
+    else{
+      if (this.selectorDomicilio === true && this.marker) {
+        console.log('Todavia falta');
+        this.navCtc.navigateBack('/pantalla-confirmacion');
+      }
+      else{
+        this.validacionImg = 'Se debe seleccionar una posición en el mapa'
+        this.CreatePopover();
+      }
+    }
+
   }
 
 }

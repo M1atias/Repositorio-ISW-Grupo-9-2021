@@ -15,6 +15,10 @@ const routes: Routes = [
     path: 'popovercomponent',
     loadChildren: () => import('./popovercomponent/popovercomponent.module').then( m => m.PopovercomponentPageModule)
   },
+  {
+    path: 'pantalla-confirmacion',
+    loadChildren: () => import('./pantalla-confirmacion/pantalla-confirmacion.module').then( m => m.PantallaConfirmacionPageModule)
+  },
 ];
 
 @NgModule({

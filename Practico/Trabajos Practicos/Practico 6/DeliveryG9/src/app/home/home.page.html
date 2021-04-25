@@ -324,8 +324,9 @@
             <ion-item-divider color="naranjita" >
                 <h3><strong>Domicilio de entrega:</strong></h3>    
             </ion-item-divider>
-            <ion-item>
+            <ion-item *ngIf="this.selectorDomicilio === false">
                 <ion-label>
+                    <ion-icon name="trail-sign-outline"></ion-icon> Dirección Ingresada
                 <p *ngIf="domicilio.valid">
                     ({{ciudadSeleccionada}}) {{nombreCalle}} {{numeroCalle}}
                 <ion-label id="labelDomicilio">
@@ -338,6 +339,9 @@
                 </ion-label>
                 </p>
             </ion-label>
+            </ion-item>
+            <ion-item *ngIf="this.selectorDomicilio === true">
+                <ion-label><ion-icon name="location-outline"></ion-icon> Ubicación del mapa </ion-label>
             </ion-item>
         </ion-item-group>
         <ion-item-group *ngIf="!selectorFechaVisible">
@@ -365,7 +369,7 @@
                 </ion-label>
             </ion-item>
         </ion-item-group>
-        <ion-button shape="round" size="default" expand="block" color="azulito" class="buttonConfirm ion-activatable ripple-parent" (click)="confirmarPedido()">
+        <ion-button shape="round" size="default" expand="block" class="buttonConfirm ion-activatable ripple-parent" (click)="confirmarPedido()">
             <ion-icon slot="start" name="checkmark-outline"></ion-icon>
             Confirmar Pedido
         </ion-button>
