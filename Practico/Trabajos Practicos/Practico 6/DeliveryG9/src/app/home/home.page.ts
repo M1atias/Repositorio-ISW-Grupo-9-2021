@@ -283,8 +283,8 @@ pickFile(){
     let blob = new Blob([this.fileObj.data],{type:"image/jpeg"});
     const text6 = "blob size=" + blob.size;
     
-    console.log(text3+text4+text5,text6);
-    alert(text3+text4+text5+text6);
+    //console.log(text3+text4+text5,text6);
+    //alert(text3+text4+text5+text6);
     if (blob.type === "image/jpeg" || blob.type === "image/jpg") {
       this.imgValidation = false;
       if (blob.size < 5000000) {
@@ -328,6 +328,8 @@ cargarProducto(){
   this.produtosCargados.push(this.produtosCargados)
   console.log(this.produtosCargados.length);
   this.productoB = detalle;
+  this.validacionImg = "";
+  this.mostrarImg = "";
 }
 
 ocultarMapa(){
