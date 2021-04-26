@@ -115,17 +115,17 @@ export class HomePage implements OnInit{
   createFormGroupDomicilioEntrega() {
     return new FormGroup({
       ciudadEntrega: new FormControl('', [Validators.required]),
-      calleEntrega: new FormControl('', [Validators.required, Validators.maxLength(50), Validators.minLength(3), Validators.pattern(/^[-a-zA-Z0-9' 'ñÑ]{1,100}$/)]),
-      numeroEntrega: new FormControl('', [Validators.required, Validators.min(1), Validators.max(99999)]),
+      calleEntrega: new FormControl('', [Validators.required, Validators.maxLength(255), Validators.minLength(1), Validators.pattern(/^[-a-zA-Z0-9' 'ñÑ]{1,100}$/)]),
+      numeroEntrega: new FormControl('', [Validators.required, Validators.min(1), Validators.max(9999999999)]),
       piso: new FormControl('', [Validators.min(-2),Validators.max(99)]),
       departamento: new FormControl('', [Validators.min(1) ,Validators.maxLength(2), Validators.pattern(/^[-a-zA-Z0-9' 'ñÑ]{1,2}$/)]),
-      referenciaEntrega: new FormControl('')
+      referenciaEntrega: new FormControl('',[Validators.maxLength(255)])
     });
   }
 
   createFormGroupMetodoPagoEfectivo(){
     return new FormGroup({
-      efectivo: new FormControl('', [Validators.required, Validators.min(100), Validators.pattern(/^[0-9' ']*$/)])
+      efectivo: new FormControl('', [Validators.required, Validators.min(1),Validators.max(999999), Validators.pattern(/^[0-9' ']*$/)])
     });
   }
 
@@ -156,7 +156,7 @@ export class HomePage implements OnInit{
   }
 
   get referencia() {
-    return this.referencia.get('referencia');
+    return this.domicilio.get('referencia');
   }
 
   //Domicilio de entrega
@@ -200,31 +200,31 @@ export class HomePage implements OnInit{
   //Mensajes de error 
 public errorMessages = {
     ciudad: [
-      { type: 'required', message: 'Se requiere el nombre de la ciudad' }
+      { type: 'required', message: 'Se requiere el nombre de la ciudad del Comercio' }
     ],
     calle: [
-      { type: 'required', message: 'Se requiere el nombre de la calle' },
-      { type: 'maxlength', message: 'El nombre de la calle no puede ser mayor a 50 caracteres' },
-      { type: 'minlength', message: 'El nombre de la calle debe tener como mínimo 3 caracteres' },
+      { type: 'required', message: 'Se requiere el nombre de la calle del Comercio' },
+      { type: 'maxlength', message: 'El nombre de la calle no puede ser mayor a 255 caracteres' },
+      { type: 'minlength', message: 'El nombre de la calle debe tener como mínimo 1 caracteres' },
       { type: 'pattern', message: 'El nombre de la calle ingresado no es valido' }
     ],
     numero: [
-      { type: 'required', message: 'Se requiere el número del domicilio' },
-      { type: 'max', message: 'El número del domicilio no puede ser mayor a 5 caracteres' },
+      { type: 'required', message: 'Se requiere el número del domicilio del Comercio' },
+      { type: 'max', message: 'El número del domicilio no puede ser mayor a 10 caracteres' },
       { type: 'min', message: 'El número del domicilio debe ser mayor a 1' }
     ],
     ciudadEntrega: [
-      { type: 'required', message: 'Se requiere el nombre de la ciudad' }
+      { type: 'required', message: 'Se requiere el nombre de la ciudad del Domicilio de Entrega' }
     ],
     calleEntrega: [
-      { type: 'required', message: 'Se requiere el nombre de la calle' },
-      { type: 'maxlength', message: 'El nombre de la calle no puede ser mayor a 50 caracteres' },
-      { type: 'minlength', message: 'El nombre de la calle debe tener como mínimo 3 caracteres' },
+      { type: 'required', message: 'Se requiere el nombre de la calle del Domicilio de Entrega' },
+      { type: 'maxlength', message: 'El nombre de la calle no puede ser mayor a 255 caracteres' },
+      { type: 'minlength', message: 'El nombre de la calle debe tener como mínimo 1 caracteres' },
       { type: 'pattern', message: 'El nombre de la calle ingresado no es valido' }
     ],
     numeroEntrega: [
-      { type: 'required', message: 'Se requiere el número del domicilio' },
-      { type: 'max', message: 'El número del domicilio no puede ser mayor a 5 caracteres' },
+      { type: 'required', message: 'Se requiere el número del Domicilio de Entrega' },
+      { type: 'max', message: 'El número del domicilio no puede ser mayor a 10 caracteres' },
       { type: 'min', message: 'El número del domicilio debe ser mayor a 1' }
     ],
     piso: [
@@ -237,7 +237,8 @@ public errorMessages = {
       { type: 'min', message: 'El número de departamento debe ser mayor a 0' }
     ],
     efectivo: [
-      { type: 'min', message: 'El monto ingresado debe ser mayor al costo de envio ($100)' },
+      { type: 'min', message: 'El monto ingresado debe ser mayor a $ 0' },
+      { type: 'max', message: 'El monto ingresado debe ser menor a $ 999.999' },
       { type: 'required', message: 'El monto es requerido' },
       {type:'pattern', message:'Solo se pueden ingresar números'}
     ],
@@ -267,8 +268,13 @@ public errorMessages = {
       { type: 'maxlength', message: 'El nombre del producto no puede ser mayor a 50 caracteres' },
       { type: 'minlength', message: 'El nombre del producto debe tener como mínimo 5 caracteres' },
       { type: 'pattern', message: 'El nombre del producto ingresado no es valido' }
+    ],
+    referencia:[
+      { type: 'maxlength', message: 'Solo se pueden ingresar 255 caracteres de Referencia' }
+    ],
+    referenciaEntrega:[
+      { type: 'maxlength', message: 'Solo se pueden ingresar 255 caracteres de Referencia' }
     ]
-
   };
 
   recargarPagina(){
@@ -402,6 +408,7 @@ mostrarMapa(){
   this.ionViewWillEnter();
   console.log('Mostrar mapa');
   console.log(this.selectorDomicilio);
+  this.domicilio.reset()
 }
 
 obtenerCiudad(event){
@@ -553,22 +560,26 @@ cambioHora(event) {
 }
 
 presentAlertHourInvalid() {
-  const alert = document.createElement('ion-alert');
+  this.validacionImg="La hora que fue seleccionada es menor a la hora actual";
+  this.CreatePopover();
+  /*const alert = document.createElement('ion-alert');
   alert.header = "Hora incorrecta !!";
   alert.subHeader = "Seleccione nuevamente la hora";
   alert.message = "La hora que fue seleccionada es menor a la hora actual";
   alert.buttons = ["Ok"];
   document.body.appendChild(alert);
-  return alert.present();
+  return alert.present();*/
 }
 presentAlertMinuteInvalid() {
-  const alert = document.createElement('ion-alert');
+  this.validacionImg="No se puede hacer la entrega antes de los 30 min";
+  this.CreatePopover();
+  /*const alert = document.createElement('ion-alert');
   alert.header = "Hora incorrecta !!";
   alert.subHeader = "Seleccione nuevamente la hora";
   alert.message = "No se puede hacer la entrega antes de los 30 min";
   alert.buttons = ["Ok"];
   document.body.appendChild(alert);
-  return alert.present();
+  return alert.present();*/
 }
 
 reestablecerValorCampoHora() {
