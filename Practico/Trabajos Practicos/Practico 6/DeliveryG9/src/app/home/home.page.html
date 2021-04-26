@@ -60,21 +60,21 @@
       </form>
     </ion-card>
 
-     <!--Modalidad de domicilio-->
+     <!--Domicilio del Comercio-->
      <ion-card>
       <ion-card-header color="rojoClaro">
-          Seleccione Modo de Cargar Domicilio
+          Indicar la Dirección del Comecio
       </ion-card-header>
       <ion-list>
           <ion-radio-group [(ngModel)]="seleccionarDomicilio">
 
               <ion-item>
-                  <ion-label>Cargar Formulario</ion-label>
+                  <ion-label>Cargar Dirección por Formulario</ion-label>
                   <ion-radio slot="start" value="griff" (click)="ocultarMapa()"></ion-radio>
               </ion-item>
 
               <ion-item>
-                  <ion-label>Seleccionar del Mapa</ion-label>
+                  <ion-label>Seleccionar la Dirección del Mapa</ion-label>
                   <ion-radio slot="start" value="biff" checked (click)="mostrarMapa()"></ion-radio>
               </ion-item>
           </ion-radio-group>
@@ -82,7 +82,7 @@
   </ion-card>
   <ion-card  id="rowFormulario" disabled="true">
     <ion-card-header color="rojoClaro">
-        Ingrese Domicilio de Entrega
+        Ingrese Dirección del Comercio
     </ion-card-header>
     <form [formGroup]="domicilio" (ngSubmit)="submit()">
         <ion-list>
@@ -121,6 +121,71 @@
                 </div>
             </ion-item>
             <ion-item>
+                <ion-label position="floating">Referencias (opcional)</ion-label>
+                <ion-textarea rows="6" cols="20" formControlName="referencia" [(ngModel)]= "referenciaIngresada"></ion-textarea>
+            </ion-item>
+        </ion-list>
+    </form>
+  </ion-card>
+  <ion-card id="rowMapa"  disabled="false">
+    <ion-card-header color="rojoClaro">
+      Seleccione Domicilio del Comercio
+    </ion-card-header>
+    <ion-card-content class="container" style="height: 385px; width: 495px; align-content: center;">
+      <div id="myMap" style="width: 100%; height: 100%;">
+      </div>
+    </ion-card-content>
+    <ion-item>
+    <ion-button (click)="getPosition()" class="linea" color="verdeAzulado">
+        ¿Donde estoy?
+    </ion-button>
+    <ion-button id="coordenadas" (click)="capturedPosition()" disabled="true" class="linea" color="verdeAzulado">
+        Mostrar Coordenadas
+    </ion-button>
+</ion-item>
+  </ion-card>
+  <ion-card>
+      <!-- Domicilio de entrega-->
+    <ion-card-header color="rojoClaro">
+        Ingrese Domicilio de Entrega
+    </ion-card-header>
+    <form [formGroup]="domicilioEntrega" (ngSubmit)="submit()">
+        <ion-list>
+            <ion-item>
+                <ion-label position="floating" >Ciudad</ion-label>
+                <ion-select [(ngModel)]="ciudadSeleccionadaEntrega" formControlName="ciudadEntrega" placeholder="Seleccione una ciudad" (ionChange)="obtenerCiudadEntrega( $event )">
+                    <!--<ion-select-option value="  " >Seleccione una ciudad</ion-select-option> -->
+                    <ion-select-option value="Cordoba" >Cordoba</ion-select-option>
+                    <ion-select-option value="Rio Ceballos" >Rio Ceballos</ion-select-option>
+                    <ion-select-option value="Unquillo" >Unquillo</ion-select-option>
+                </ion-select>
+                <div *ngFor="let error of errorMessages.ciudadEntrega">
+                    <ng-container *ngIf="ciudadEntrega.hasError(error.type) && (ciudadEntrega.dirty || ciudadEntrega.touched)">
+                        <small class="error-message">{{error.message}}</small>
+                    </ng-container>
+                </div>
+            </ion-item>
+
+
+            <ion-item>
+                <ion-label position="floating">Calle</ion-label>
+                <ion-input formControlName="calleEntrega" [(ngModel)]= "nombreCalleEntrega"></ion-input>
+                <div *ngFor="let error of errorMessages.calleEntrega">
+                    <ng-container *ngIf="calleEntrega.hasError(error.type) && (calleEntrega.dirty || calleEntrega.touched)">
+                        <small class="error-message">{{error.message}}</small>
+                    </ng-container>
+                </div>
+            </ion-item>
+            <ion-item>
+                <ion-label position="floating">Número</ion-label>
+                <ion-input type="number" formControlName="numeroEntrega" [(ngModel)]= "numeroCalleEntrega"></ion-input>
+                <div *ngFor="let error of errorMessages.numeroEntrega">
+                    <ng-container *ngIf="numeroEntrega.hasError(error.type) && (numeroEntrega.dirty || numeroEntrega.touched)">
+                        <small class="error-message">{{error.message}}</small>
+                    </ng-container>
+                </div>
+            </ion-item>
+            <ion-item>
                 <ion-label position="floating">Piso</ion-label>
                 <ion-input type="number" formControlName="piso" [(ngModel)]= "numeroPiso"></ion-input>
                 <div *ngFor="let error of errorMessages.piso">
@@ -140,27 +205,10 @@
             </ion-item>
             <ion-item>
                 <ion-label position="floating">Referencias (opcional)</ion-label>
-                <ion-textarea rows="6" cols="20" formControlName="referencia" [(ngModel)]= "referenciaIngresada"></ion-textarea>
+                <ion-textarea rows="6" cols="20" formControlName="referenciaEntrega" [(ngModel)]= "referenciaEntregaIngresada"></ion-textarea>
             </ion-item>
         </ion-list>
     </form>
-  </ion-card>
-  <ion-card id="rowMapa"  disabled="false">
-    <ion-card-header color="rojoClaro">
-      Seleccione Domicilio de Entrega
-    </ion-card-header>
-    <ion-card-content class="container" style="height: 385px; width: 495px; align-content: center;">
-      <div id="myMap" style="width: 100%; height: 100%;">
-      </div>
-    </ion-card-content>
-    <ion-item>
-    <ion-button (click)="getPosition()" class="linea" color="verdeAzulado">
-        ¿Donde estoy?
-    </ion-button>
-    <ion-button id="coordenadas" (click)="capturedPosition()" disabled="true" class="linea" color="verdeAzulado">
-        Mostrar Coordenadas
-    </ion-button>
-</ion-item>
   </ion-card>
   <!--Modalidad de entrega-->
   <ion-card>
@@ -322,7 +370,7 @@
         </ion-item-group>
         <ion-item-group>
             <ion-item-divider color="amarilloClaro" >
-                <h3><strong>Domicilio de entrega:</strong></h3>    
+                <h3><strong>Dirección del comercio:</strong></h3>    
             </ion-item-divider>
             <ion-item *ngIf="this.selectorDomicilio === false">
                 <ion-label>
@@ -342,6 +390,27 @@
             </ion-item>
             <ion-item *ngIf="this.selectorDomicilio === true">
                 <ion-label><ion-icon name="location-outline"></ion-icon> Ubicación del mapa </ion-label>
+            </ion-item>
+        </ion-item-group>
+        <ion-item-group>
+            <ion-item-divider color="amarilloClaro" >
+                <h3><strong>Domicilio de entrega:</strong></h3>    
+            </ion-item-divider>
+            <ion-item>
+                <ion-label>
+                    <ion-icon name="trail-sign-outline"></ion-icon> Dirección Ingresada
+                <p *ngIf="domicilioEntrega.valid">
+                    ({{ciudadSeleccionadaEntrega}}) {{nombreCalleEntrega}} {{numeroCalleEntrega}}
+                <ion-label id="labelDomicilio">
+                    <small id="parrafoDetalleDomicilio" *ngIf="numeroPiso >= -2 && numeroPiso !== null">
+                          Piso: {{numeroPiso}}{{numeroDepartamento}} 
+                    </small>
+                    <small id="parrafoDetalleDomicilio" *ngIf='referenciaEntregaIngresada !== "" '>
+                        ; Referencias: "{{referenciaEntregaIngresada}}"
+                    </small>
+                </ion-label>
+                </p>
+            </ion-label>
             </ion-item>
         </ion-item-group>
         <ion-item-group *ngIf="!selectorFechaVisible">

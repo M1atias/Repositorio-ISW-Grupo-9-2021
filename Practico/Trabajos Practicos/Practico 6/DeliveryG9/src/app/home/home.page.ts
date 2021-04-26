@@ -29,11 +29,15 @@ export class HomePage implements OnInit{
   seleccionarDomicilio = "biff";
   selectorDomicilio: boolean = true;
   ciudadSeleccionada:string;
+  ciudadSeleccionadaEntrega:string;
   nombreCalle:string;
+  nombreCalleEntrega:string;
   numeroCalle:string;
+  numeroCalleEntrega:string;
   numeroPiso:number = null;
   numeroDepartamento:string = " ";
   referenciaIngresada:string="";
+  referenciaEntregaIngresada:string="";
   latInicial:any;
   logInicial:any;
   latLong=[];
@@ -75,6 +79,7 @@ export class HomePage implements OnInit{
     this.domicilio = this.createFormGroupDomicilio();
     this.metodoPagoEfectivo = this.createFormGroupMetodoPagoEfectivo();
     this.metodoPagoTarjeta = this.createFormGroupMetodoPagoTarjeta();
+    this.domicilioEntrega = this.createFormGroupDomicilioEntrega();
   }
   resetearFormularioProducto(){
     this.productoBuscar.reset();
@@ -89,6 +94,7 @@ export class HomePage implements OnInit{
   
   productoBuscar: FormGroup;
   domicilio: FormGroup;
+  domicilioEntrega: FormGroup;
   metodoPagoEfectivo: FormGroup;
   metodoPagoTarjeta: FormGroup;
   
@@ -100,11 +106,20 @@ export class HomePage implements OnInit{
   createFormGroupDomicilio() {
     return new FormGroup({
       ciudad: new FormControl('', [Validators.required]),
-      calle: new FormControl('', [Validators.required, Validators.maxLength(50), Validators.minLength(3), Validators.pattern(/^[-a-zA-Z0-9' 'ñÑ]{1,100}$/)]),
-      numero: new FormControl('', [Validators.required, Validators.min(1), Validators.max(99999)]),
+      calle: new FormControl('', [Validators.required, Validators.maxLength(255), Validators.minLength(1), Validators.pattern(/^[-a-zA-Z0-9' 'ñÑ]{1,100}$/)]),
+      numero: new FormControl('', [Validators.required, Validators.min(1), Validators.max(9999999999)]),
+      referencia: new FormControl('',[Validators.maxLength(255)])
+    });
+  }
+
+  createFormGroupDomicilioEntrega() {
+    return new FormGroup({
+      ciudadEntrega: new FormControl('', [Validators.required]),
+      calleEntrega: new FormControl('', [Validators.required, Validators.maxLength(50), Validators.minLength(3), Validators.pattern(/^[-a-zA-Z0-9' 'ñÑ]{1,100}$/)]),
+      numeroEntrega: new FormControl('', [Validators.required, Validators.min(1), Validators.max(99999)]),
       piso: new FormControl('', [Validators.min(-2),Validators.max(99)]),
       departamento: new FormControl('', [Validators.min(1) ,Validators.maxLength(2), Validators.pattern(/^[-a-zA-Z0-9' 'ñÑ]{1,2}$/)]),
-      referencia: new FormControl('')
+      referenciaEntrega: new FormControl('')
     });
   }
 
@@ -129,6 +144,7 @@ export class HomePage implements OnInit{
   get nombreProducto(){
     return this.productoBuscar.get('nombreProducto');
   }
+  //Comercio
   get ciudad() {
     return this.domicilio.get('ciudad');
   }
@@ -138,15 +154,30 @@ export class HomePage implements OnInit{
   get numero() {
     return this.domicilio.get('numero');
   }
-  get piso() {
-    return this.domicilio.get('piso');
-  }
-  get departamento() {
-    return this.domicilio.get('departamento');
-  }
 
   get referencia() {
     return this.referencia.get('referencia');
+  }
+
+  //Domicilio de entrega
+  get ciudadEntrega() {
+    return this.domicilioEntrega.get('ciudadEntrega');
+  }
+  get calleEntrega() {
+    return this.domicilioEntrega.get('calleEntrega');
+  }
+  get numeroEntrega() {
+    return this.domicilioEntrega.get('numeroEntrega');
+  }
+  get piso() {
+    return this.domicilioEntrega.get('piso');
+  }
+  get departamento() {
+    return this.domicilioEntrega.get('departamento');
+  }
+
+  get referenciaEntrega() {
+    return this.domicilioEntrega.get('referenciaEntrega');
   }
 
   get efectivo() {
@@ -178,6 +209,20 @@ public errorMessages = {
       { type: 'pattern', message: 'El nombre de la calle ingresado no es valido' }
     ],
     numero: [
+      { type: 'required', message: 'Se requiere el número del domicilio' },
+      { type: 'max', message: 'El número del domicilio no puede ser mayor a 5 caracteres' },
+      { type: 'min', message: 'El número del domicilio debe ser mayor a 1' }
+    ],
+    ciudadEntrega: [
+      { type: 'required', message: 'Se requiere el nombre de la ciudad' }
+    ],
+    calleEntrega: [
+      { type: 'required', message: 'Se requiere el nombre de la calle' },
+      { type: 'maxlength', message: 'El nombre de la calle no puede ser mayor a 50 caracteres' },
+      { type: 'minlength', message: 'El nombre de la calle debe tener como mínimo 3 caracteres' },
+      { type: 'pattern', message: 'El nombre de la calle ingresado no es valido' }
+    ],
+    numeroEntrega: [
       { type: 'required', message: 'Se requiere el número del domicilio' },
       { type: 'max', message: 'El número del domicilio no puede ser mayor a 5 caracteres' },
       { type: 'min', message: 'El número del domicilio debe ser mayor a 1' }
@@ -361,6 +406,10 @@ mostrarMapa(){
 
 obtenerCiudad(event){
   this.ciudadSeleccionada = event.detail.value;
+}
+
+obtenerCiudadEntrega(event){
+  this.ciudadSeleccionadaEntrega = event.detail.value;
 }
 
 getGeolaction(){
@@ -642,12 +691,16 @@ validarMonto(event){
   }
 
   limpiarCampos(){
-    this.ciudadSeleccionada = "  ";   
+    this.ciudadSeleccionada = "  "; 
+    this.ciudadSeleccionadaEntrega = "  "; 
     this.nombreCalle = "     ";
+    this.nombreCalleEntrega = "     ";
     this.numeroCalle = "   ";
+    this.numeroCalleEntrega = "   ";
     this.numeroPiso = null;
     this.numeroDepartamento = " ";
     this.referenciaIngresada = "";
+    this.referenciaEntregaIngresada = "";
     this.selectorFechaVisible = false;
     this.seleccionarEntrega = "biff";
     this.seleccionarPago = "biff";
@@ -658,7 +711,7 @@ validarMonto(event){
 
   validarRecarga(){
     //cambiar condición this.produtosCargados.length = 0 por this.produtosCargados.length > 0      (this.montoIngresado >= this.precio || this.selectorTarjetaVisible) &&                                                                             // && this.limpiarValore !== " "
-    if (this.produtosCargados.length > 0 && (this.metodoPagoTarjeta.valid || this.metodoPagoEfectivo.valid)) {
+    if (this.produtosCargados.length > 0 && (this.metodoPagoTarjeta.valid || this.metodoPagoEfectivo.valid) && this.domicilioEntrega.valid) {
       console.log('Productos y pago OK')
       //return true;
       if (this.selectorDomicilio === false && this.domicilio.valid && this.ciudadSeleccionada !== "  " && this.nombreCalle !== "     " && this.numeroCalle !== "   ") {
