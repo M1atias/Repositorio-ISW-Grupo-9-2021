@@ -302,17 +302,34 @@ public errorMessages = {
     });
     await loading.present();
   }
+  borrarProductos(){
+    let list = document.querySelector('#listaProductosACargar');
+    const vueltas = this.produtosCargados.length;
+    for (let index = 0; index < vueltas; index++) {
+      var hijo = document.getElementById('producto')
+      list.removeChild(hijo);
+    }
+  }
   refrescar(event){
     setTimeout(()=>{
     this.limpiarCampos();
     this.presentLoading();
     this.recargarPagina();
     this.domicilio.reset();
+    this.domicilioEntrega.reset();
+    this.productoBuscar.reset();
     this.metodoPagoEfectivo.reset();
     this.metodoPagoTarjeta.reset();
     this.limpiarValore = " ";
     this.referenciaIngresada = "";
     event.target.complete();
+    this.borrarProductos();
+    this.produtosCargados = [];
+    const btn = document.querySelector('#coordenadas');
+    btn.setAttribute('disabled','true');
+    this.map.remove();
+    this.marker = null;
+    this.ionViewWillEnter();
   },1500);
 }
 
@@ -356,7 +373,6 @@ pickFile(){
   }
 }
 cargarProducto(){
-  let vueltas = this.produtosCargados.length;
   const detalle = "     ";
   const ionItem = document.createElement('ion-item');
   const img = document.createElement('img');
@@ -374,6 +390,7 @@ cargarProducto(){
   ionAvatar.appendChild(img);
   ionItem.appendChild(nuevoProducto);
   ionItem.appendChild(img);
+  ionItem.setAttribute('id','producto');
   let list = document.querySelector('#listaProductosACargar');
   list.appendChild(ionItem);
   this.produtosCargados.push(this.produtosCargados)
@@ -704,7 +721,7 @@ validarMonto(event){
   limpiarCampos(){
     this.ciudadSeleccionada = "  "; 
     this.ciudadSeleccionadaEntrega = "  "; 
-    this.nombreCalle = "     ";
+    this.nombreCalle = " ";
     this.nombreCalleEntrega = "     ";
     this.numeroCalle = "   ";
     this.numeroCalleEntrega = "   ";
@@ -715,6 +732,8 @@ validarMonto(event){
     this.selectorFechaVisible = false;
     this.seleccionarEntrega = "biff";
     this.seleccionarPago = "biff";
+    this.seleccionarDomicilio = "biff";
+    this.mostrarMapa();
     this.selectorTarjetaVisible = false; 
     this.numeroTarjetaVISA=null;
     this.titularTarjeta = null;
