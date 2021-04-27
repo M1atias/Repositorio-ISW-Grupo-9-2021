@@ -322,14 +322,19 @@ public errorMessages = {
     this.metodoPagoTarjeta.reset();
     this.limpiarValore = " ";
     this.referenciaIngresada = "";
+    this.referenciaEntregaIngresada = "";
     event.target.complete();
     this.borrarProductos();
     this.produtosCargados = [];
     const btn = document.querySelector('#coordenadas');
     btn.setAttribute('disabled','true');
+    this.mostrarMapa()
     this.map.remove();
     this.marker = null;
     this.ionViewWillEnter();
+    this.productoB = "     ";
+    this.validacionImg = "";
+    this.mostrarImg = " ";
   },1500);
 }
 
@@ -353,7 +358,9 @@ pickFile(){
     
     //console.log(text3+text4+text5,text6);
     //alert(text3+text4+text5+text6);
-    if (blob.type === "image/jpeg" || blob.type === "image/jpg") {
+    //alert(blob.type);
+    
+    if (text3 === "\"image/jpeg\"" || text3 === "\"image/jpeg\"") {
       this.imgValidation = false;
       if (blob.size < 5000000) {
         this.imgValidation = false;
