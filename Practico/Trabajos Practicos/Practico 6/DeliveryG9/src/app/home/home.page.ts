@@ -724,7 +724,7 @@ validarMonto(event){
     this.nombreCalle = " ";
     this.nombreCalleEntrega = "     ";
     this.numeroCalle = "   ";
-    this.numeroCalleEntrega = "   ";
+    this.numeroCalleEntrega = null;
     this.numeroPiso = null;
     this.numeroDepartamento = " ";
     this.referenciaIngresada = "";
@@ -733,7 +733,6 @@ validarMonto(event){
     this.seleccionarEntrega = "biff";
     this.seleccionarPago = "biff";
     this.seleccionarDomicilio = "biff";
-    this.mostrarMapa();
     this.selectorTarjetaVisible = false; 
     this.numeroTarjetaVISA=null;
     this.titularTarjeta = null;
@@ -741,7 +740,7 @@ validarMonto(event){
 
   validarRecarga(){
     //cambiar condición this.produtosCargados.length = 0 por this.produtosCargados.length > 0      (this.montoIngresado >= this.precio || this.selectorTarjetaVisible) &&                                                                             // && this.limpiarValore !== " "
-    if (this.produtosCargados.length > 0 && (this.metodoPagoTarjeta.valid || this.metodoPagoEfectivo.valid) && this.domicilioEntrega.valid) {
+    if (this.produtosCargados.length > 0 && (this.metodoPagoTarjeta.valid || this.metodoPagoEfectivo.valid) && this.domicilioEntrega.valid && this.limpiarValore != " ") {
       console.log('Productos y pago OK')
       //return true;
       if (this.selectorDomicilio === false && this.domicilio.valid && this.ciudadSeleccionada !== "  " && this.nombreCalle !== "     " && this.numeroCalle !== "   ") {

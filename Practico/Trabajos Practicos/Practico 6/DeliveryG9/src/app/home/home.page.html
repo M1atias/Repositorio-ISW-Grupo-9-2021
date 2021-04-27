@@ -358,7 +358,7 @@
                 <h3><strong>Resumen del pago:</strong></h3><ion-icon name="receipt-outline"></ion-icon>
             </ion-item-divider>
             <ion-item>
-                <ion-label>Total: $ {{montoIngresado}}</ion-label>
+                <ion-label *ngIf="selectorTarjetaVisible===false">Total: $ {{montoIngresado}}</ion-label>
                 <ion-label>Costo del envio: $ {{precio}}</ion-label>
             </ion-item>
             <ion-item>
