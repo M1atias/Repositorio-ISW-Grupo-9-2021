@@ -27,7 +27,9 @@ export class HomePage implements OnInit{
   validacionImg:string;
   produtosCargados:any[]=[];
   seleccionarDomicilio = "biff";
+  seleccionarDomicilioEntrega = "biff";
   selectorDomicilio: boolean = true;
+  selectorDomicilioEntrega: boolean = true;
   ciudadSeleccionada:string;
   ciudadSeleccionadaEntrega:string;
   nombreCalle:string;
@@ -43,6 +45,8 @@ export class HomePage implements OnInit{
   latLong=[];
   map:L.Map;
   marker;
+  map2:L.Map;
+  marker2;
   _geocoderType = L.Control.Geocoder.nominatim();
   geocoder = L.Control.geocoder({
     geocoder: this._geocoderType
@@ -66,6 +70,10 @@ export class HomePage implements OnInit{
   numeroTarjetaVISA:string;
   mostrarVISA:string = "*********";
   titularTarjeta:string;
+  sosMapa2:boolean= false;
+  Mapa2: boolean = false;
+  layer1:L.Layer;
+  
   
 
   constructor(
@@ -327,11 +335,17 @@ public errorMessages = {
     this.borrarProductos();
     this.produtosCargados = [];
     const btn = document.querySelector('#coordenadas');
+    const btn2 = document.querySelector('#coordenadas2');
     btn.setAttribute('disabled','true');
-    this.mostrarMapa()
-    this.map.remove();
-    this.marker = null;
-    this.ionViewWillEnter();
+    btn2.setAttribute('disabled','true');
+    this.ocultarMapa();
+    this.ocultarMapa2();
+    this.mostrarMapa2();
+    this.mostrarMapa();
+    this.map.removeLayer(this.layer1);
+    //this.marker = null;
+    //this.marker2 = null;
+    //this.ionViewWillEnter();
     this.productoB = "     ";
     this.validacionImg = "";
     this.mostrarImg = " ";
@@ -408,6 +422,7 @@ cargarProducto(){
 }
 
 ocultarMapa(){
+  this.sosMapa2 = false;
   const formulario = document.querySelector('#rowFormulario');
   const mapa = document.querySelector('#rowMapa');
   formulario.setAttribute("disabled","false")
@@ -420,10 +435,30 @@ ocultarMapa(){
   console.log(this.selectorDomicilio);
 }
 
+ocultarMapa2(){
+  this.sosMapa2 = true;
+  const formulario = document.querySelector('#rowFormulario2');
+  const mapa = document.querySelector('#rowMapa2');
+  formulario.setAttribute("disabled","false")
+  mapa.setAttribute("disabled","true");
+  this.selectorDomicilioEntrega = false;
+  this.ionViewWillLeave();
+  console.log('Mostrar formulario');
+  const btn = document.querySelector('#coordenadas2');
+  btn.setAttribute('disabled','true');
+  console.log(this.selectorDomicilioEntrega);
+}
+
 ionViewWillLeave(){
-  this.map.remove()
+  if (this.sosMapa2 === true) {
+    this.map2.remove();
+    this.sosMapa2 = false;
+  }else{
+    this.map.remove();
+  }
 }
 mostrarMapa(){
+  this.Mapa2 = true;
   const mapa = document.querySelector('#rowMapa');
   const formulario = document.querySelector('#rowFormulario');
   mapa.setAttribute("disabled","false");
@@ -433,6 +468,17 @@ mostrarMapa(){
   console.log('Mostrar mapa');
   console.log(this.selectorDomicilio);
   this.domicilio.reset()
+}
+mostrarMapa2(){
+  const mapa = document.querySelector('#rowMapa2');
+  const formulario = document.querySelector('#rowFormulario2');
+  mapa.setAttribute("disabled","false");
+  formulario.setAttribute("disabled","true");
+  this.selectorDomicilioEntrega = true;
+  this.ionViewWillEnter2();
+  console.log('Mostrar mapa');
+  console.log(this.selectorDomicilioEntrega);
+  this.domicilioEntrega.reset()
 }
 
 obtenerCiudad(event){
@@ -469,6 +515,21 @@ getPosition(){
   })
 }
 
+getPosition2(){
+  const btn = document.querySelector('#coordenadas2');
+  btn.setAttribute('disabled','false');
+  this.geolaction.getCurrentPosition({
+    enableHighAccuracy:true
+  }).then((res)=>{
+    return this.latLong = [
+      res.coords.latitude,
+      res.coords.longitude
+    ]
+  }).then((latLong)=>{
+    this.showMarker2(latLong);
+  })
+}
+
 showMarker(latLog){
   if(this.marker){
     this.marker.setLatLng(this.latLong,{draggable:true,bubblingMouseEvents:true});
@@ -476,9 +537,23 @@ showMarker(latLog){
   }else{
     this.marker = L.marker(latLog,{draggable:true,bubblingMouseEvents:true});
     const coordenadas = this.marker.getLatLng();
-    this.marker.addTo(this.map).bindPopup('Usted esta en:' + '(Latitud :  ' + coordenadas.lat + ', Longitud: ' + coordenadas.lng + ' ) ').openPopup();
+    this.layer1 = this.marker.addTo(this.map);
+    this.marker.bindPopup('Usted esta en:' + '(Latitud :  ' + coordenadas.lat + ', Longitud: ' + coordenadas.lng + ' ) ').openPopup();
     this.map.setView(latLog);
     console.log(this.marker);
+  }
+}
+
+showMarker2(latLog){
+  if(this.marker2){
+    this.marker2.setLatLng(this.latLong,{draggable:true,bubblingMouseEvents:true});
+    this.map2.setView(latLog);
+  }else{
+    this.marker2 = L.marker(latLog,{draggable:true,bubblingMouseEvents:true});
+    const coordenadas = this.marker2.getLatLng();
+    this.marker2.addTo(this.map2).bindPopup('Usted esta en:' + '(Latitud :  ' + coordenadas.lat + ', Longitud: ' + coordenadas.lng + ' ) ').openPopup();
+    this.map2.setView(latLog);
+    console.log(this.marker2);
   }
 }
 
@@ -488,15 +563,23 @@ capturedPosition(){
   const markerJson = this.marker.toGeoJSON();
   console.log(markerJson);
 }
+capturedPosition2(){
+  const coordenadas = this.marker2.getLatLng();
+  this.marker2.addTo(this.map2).bindPopup('Usted esta en:' + '(Latitud :  ' + coordenadas.lat + ', Longitud: ' + coordenadas.lng + ' ) ').openPopup();
+  const markerJson = this.marker2.toGeoJSON();
+  console.log(markerJson);
+}
 
 ionViewWillEnter(){  
   const conMapa = document.querySelector('.container');
-  const container = document.getElementById('myMap')
+  const container = document.getElementById('myMap');
   if (container) {
     this.map = new L.Map('myMap').setView([-31.4172235,-64.1891788],14);
     this.showMap();
-  }else{
+  }
+  else{
     console.log('No se encontro el mapa');
+    const card = document.querySelector('#rowMapa');
     const newContMapa = document.createElement('ion-card-content');
     const contenedor = document.createElement('div');
     newContMapa.setAttribute('width','495px');
@@ -505,10 +588,36 @@ ionViewWillEnter(){
     contenedor.setAttribute('height','80%');
     contenedor.id="myMap";
     newContMapa.appendChild(contenedor);
+    card.appendChild(newContMapa)
     this.map = new L.Map('myMap').setView([-31.4172235,-64.1891788],14);
     this.showMap();
   }
+  this.ionViewWillEnter2();
 }
+ionViewWillEnter2(){
+  const conMapa2 = document.querySelector('.container2');
+  const container2 = document.getElementById('myMap2');
+  if (container2) {
+    this.map2 = new L.Map('myMap2').setView([-31.4172235,-64.1891788],14);
+    this.showMap2();
+  }
+  else{
+    console.log('No se encontro el mapa');
+    const card = document.querySelector('#rowMapa2');
+    const newContMapa2 = document.createElement('ion-card-content');
+    const contenedor2 = document.createElement('div');
+    newContMapa2.setAttribute('width','495px');
+    newContMapa2.setAttribute('height','385px');
+    contenedor2.setAttribute('width','100%');
+    contenedor2.setAttribute('height','80%');
+    contenedor2.id="myMap2";
+    newContMapa2.appendChild(contenedor2);
+    card.appendChild(newContMapa2);
+    this.map2 = new L.Map('myMap2').setView([-31.4172235,-64.1891788],14);
+    this.showMap2();
+  }
+}
+ 
 
 /*ngAfterViewInit() {
   this.map = new L.Map('myMap').setView([-31.4172235,-64.1891788],14);
@@ -522,6 +631,24 @@ showMap(){
   //this.map = new L.Map('myMap').setView([-31.4172235,-64.1891788],14);
   L.tileLayer('assets/mapa/{z}/{x}/{y}.png').addTo(this.map);
   this.geocoder.addTo(this.map);
+  var cen;
+  this.geocoder.on('markgeocode', function(event) {
+      var center = event.geocode.center;
+      cen = center;
+      console.log(center);
+      console.log(cen);
+      //L.marker(center,{draggable:true,bubblingMouseEvents:true}).addTo(mapa);
+      //mapa.setView(center, mapa.getZoom());
+      //this.showMarker(center);
+      //L.Control.geocoder().addTo(this.map);
+    });
+}
+
+showMap2(){
+  this.getGeolaction();
+  //this.map = new L.Map('myMap').setView([-31.4172235,-64.1891788],14);
+  L.tileLayer('assets/mapa/{z}/{x}/{y}.png').addTo(this.map2);
+  this.geocoder.addTo(this.map2);
   var cen;
   this.geocoder.on('markgeocode', function(event) {
       var center = event.geocode.center;
@@ -740,6 +867,7 @@ validarMonto(event){
     this.seleccionarEntrega = "biff";
     this.seleccionarPago = "biff";
     this.seleccionarDomicilio = "biff";
+    this.seleccionarDomicilioEntrega = "biff";
     this.selectorTarjetaVisible = false; 
     this.numeroTarjetaVISA=null;
     this.titularTarjeta = null;
@@ -747,7 +875,7 @@ validarMonto(event){
 
   validarRecarga(){
     //cambiar condición this.produtosCargados.length = 0 por this.produtosCargados.length > 0      (this.montoIngresado >= this.precio || this.selectorTarjetaVisible) &&                                                                             // && this.limpiarValore !== " "
-    if (this.produtosCargados.length > 0 && (this.metodoPagoTarjeta.valid || this.metodoPagoEfectivo.valid) && this.domicilioEntrega.valid && this.limpiarValore != " ") {
+    if (this.produtosCargados.length > 0 && (this.metodoPagoTarjeta.valid || this.metodoPagoEfectivo.valid)  && this.limpiarValore != " ") {
       console.log('Productos y pago OK')
       //return true;
       if (this.selectorDomicilio === false && this.domicilio.valid && this.ciudadSeleccionada !== "  " && this.nombreCalle !== "     " && this.numeroCalle !== "   ") {
@@ -757,10 +885,11 @@ validarMonto(event){
       else if (this.selectorDomicilio === true) {
         return true
       }
-      else{
-        this.validacionImg = 'Se debe seleccionar una posición en el mapa'
-        this.CreatePopover();
-        return false
+      if (this.selectorDomicilioEntrega === false && this.domicilioEntrega.valid && this.ciudadSeleccionadaEntrega !== "  " && this.nombreCalleEntrega !== "     " && this.numeroCalleEntrega !== "   ") {
+        return true
+      }
+      else if (this.selectorDomicilioEntrega === true) {
+        return true
       }
     }else{
       return false
@@ -768,18 +897,37 @@ validarMonto(event){
     
   }
   confirmarPedido(){
+   var bool1, bool2 = false;
     if (this.selectorDomicilio === false) {
-      this.navCtc.navigateBack('/pantalla-confirmacion');
+      bool1 = true;
     }
     else{
       if (this.selectorDomicilio === true && this.marker) {
+        bool1 = true;
         console.log('Todavia falta');
-        this.navCtc.navigateBack('/pantalla-confirmacion');
       }
       else{
-        this.validacionImg = 'Se debe seleccionar una posición en el mapa'
+        bool1 = false;
+        this.validacionImg = 'Se debe seleccionar una posición en el mapa para indicar la dirección del comercio'
         this.CreatePopover();
       }
+    }
+    if (this.selectorDomicilioEntrega === false) {
+      bool2 = true;
+    }
+    else{
+      if (this.selectorDomicilioEntrega === true && this.marker2) {
+        bool2 = true;
+        console.log('Todavia falta');
+      }
+      else{
+        bool2 = false;
+        this.validacionImg = 'Se debe seleccionar una posición en el mapa para indicar el domicilio de entrega'
+        this.CreatePopover();
+      }
+    }
+    if (bool1 === true && bool2 == true) {
+      this.navCtc.navigateBack('/pantalla-confirmacion');
     }
 
   }
