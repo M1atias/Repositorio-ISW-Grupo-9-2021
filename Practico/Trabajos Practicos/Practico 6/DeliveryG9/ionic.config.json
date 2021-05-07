@@ -1,0 +1,7 @@
+{
+  "name": "DeliveryG9",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
