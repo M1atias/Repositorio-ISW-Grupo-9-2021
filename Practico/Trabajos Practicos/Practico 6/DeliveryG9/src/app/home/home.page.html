@@ -149,8 +149,27 @@
     </ion-button>
 </ion-item>
   </ion-card>
+  <!-- Domicilio de entrega-->
   <ion-card>
-      <!-- Domicilio de entrega-->
+    <ion-card-header color="rojoClaro">
+        Indicar el Domicilio de Entrega
+    </ion-card-header>
+    <ion-list>
+        <ion-radio-group [(ngModel)]="seleccionarDomicilioEntrega">
+
+            <ion-item>
+                <ion-label>Cargar Domicilio por Formulario</ion-label>
+                <ion-radio slot="start" value="griff" (click)="ocultarMapa2()"></ion-radio>
+            </ion-item>
+
+            <ion-item>
+                <ion-label>Seleccionar el Domicilio del Mapa</ion-label>
+                <ion-radio slot="start" value="biff" checked (click)="mostrarMapa2()"></ion-radio>
+            </ion-item>
+        </ion-radio-group>
+    </ion-list>
+</ion-card>
+  <ion-card id="rowFormulario2" disabled="true">
     <ion-card-header color="rojoClaro">
         Ingrese Domicilio de Entrega
     </ion-card-header>
@@ -219,6 +238,23 @@
             </ion-item>
         </ion-list>
     </form>
+  </ion-card>
+  <ion-card id="rowMapa2"  disabled="false">
+    <ion-card-header color="rojoClaro">
+      Seleccione Domicilio de Entrega
+    </ion-card-header>
+    <ion-card-content class="container2" style="height: 385px; width: 495px; align-content: center;">
+      <div id="myMap2" style="width: 100%; height: 100%;">
+      </div>
+    </ion-card-content>
+    <ion-item>
+    <ion-button (click)="getPosition2()" class="linea" color="verdeAzulado">
+        ¿Donde estoy?
+    </ion-button>
+    <ion-button id="coordenadas2" (click)="capturedPosition2()" disabled="true" class="linea" color="verdeAzulado">
+        Mostrar Coordenadas
+    </ion-button>
+</ion-item>
   </ion-card>
   <!--Modalidad de entrega-->
   <ion-card>
@@ -406,7 +442,7 @@
             <ion-item-divider color="amarilloClaro" >
                 <h3><strong>Domicilio de entrega:</strong></h3><ion-icon name="home-outline"></ion-icon>   
             </ion-item-divider>
-            <ion-item>
+            <ion-item *ngIf="this.selectorDomicilioEntrega === false">
                 <ion-label>
                     <ion-icon name="trail-sign-outline"></ion-icon> Dirección Ingresada
                 <p *ngIf="domicilioEntrega.valid">
@@ -421,6 +457,9 @@
                 </ion-label>
                 </p>
             </ion-label>
+            </ion-item>
+            <ion-item *ngIf="this.selectorDomicilio === true">
+                <ion-label><ion-icon name="location-outline"></ion-icon> Ubicación del mapa </ion-label>
             </ion-item>
         </ion-item-group>
         <ion-item-group *ngIf="!selectorFechaVisible">
